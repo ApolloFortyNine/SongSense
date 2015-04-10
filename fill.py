@@ -8,10 +8,7 @@ from database import User
 from database import Base
 import time
 import datetime
-# TODO Run it for SIMO (CAPSLOCKLOL)
-# TODO Class-ify IRCBOT with method returning user list[], and add to OsuReccomendations project
-# TODO Add licensing stuff (GPLv3)
-# TODO Add to github (private repository?)
+
 # TODO Last updated column, take into account in fill class (3 days maybe?)
 # TODO Modify fill to work with updating and new users (delete old user, add new; try update first though)
 # TODO Take top 3 results, find most played song not already played
@@ -21,9 +18,9 @@ import datetime
 
 
 class Fill:
-    def __init__(self):
-        self.osu = OsuApi('786b438aa07b502edd057387927406651b6b9698')
-        self.engine = create_engine("sqlite:///test.db")
+    def __init__(self, osu_api_key, engine):
+        self.osu = OsuApi(osu_api_key)
+        self.engine = engine
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
         Base.metadata.create_all(self.engine, checkfirst=True)

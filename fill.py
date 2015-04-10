@@ -36,6 +36,11 @@ class Fill:
         except IndexError:
             print("We got a cheater over here")
             return
+        # If low rank, don't bother storing
+        if user_info['pp_rank'] is None:
+            return
+        elif (int(user_info['pp_rank']) > 300000) | (int(user_info['pp_rank']) == 0):
+            return
         try:
             beatmaps = self.osu.get_user_best(osu_name, limit=50)
         except ValueError:
@@ -53,7 +58,8 @@ class Fill:
                                 date=datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S"),
                                 rank=beatmap['rank'], pp=beatmap['pp']))
 
-        # Using merge here allows it to both refresh user info and beatmap info
+        # Using merge here allows it to both refresh user info and beatmap info. Also handles changed name, since
+        # user_id is the primary key
         self.session.merge(User(user_id=user_info['user_id'], username=user_info['username'],
                                 count300=user_info['count300'], count100=user_info['count100'],
                                 count50=user_info['count50'], play_count=user_info['playcount'],
@@ -74,10 +80,13 @@ class Fill:
 
 #engine = create_engine("sqlite:///test3.db")
 #test = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
-#test.fill_data("hvick225")
+#test.fill_data("SKSora")
 #time.sleep(5)
 #Session = sessionmaker(bind=engine)
 #session = Session()
+#x = session.query(User).filter((User.pp_rank < 1) | (User.pp_rank == None)).all()
+#for y in x:
+#    print(y.username)
 #session.delete(session.query(User).filter(User.username == "hvick225").first())
 #session.commit()
 #query = test.session.query(User).filter(User.user_id==1845677).order_by(User.id)

@@ -9,8 +9,6 @@ from database import Base
 import time
 import datetime
 
-# TODO Last updated column, take into account in fill class (3 days maybe?)
-# TODO Modify fill to work with updating and new users (delete old user, add new; try update first though)
 # TODO Take top 3 results, find most played song not already played
 # TODO Create webserver
 # TODO Make sure if someone changes their name it works (remove old by user_id?; test manually)
@@ -26,6 +24,10 @@ class Fill:
         Base.metadata.create_all(self.engine, checkfirst=True)
 
     def fill_data(self, osu_name):
+        current_user = self.session.query(User).filter(User.username == osu_name).first()
+        if current_user is not None:
+            if (datetime.datetime.now() - current_user.last_updated).days < 3:
+                return
         try:
             user_info = self.osu.get_user(osu_name)[0]
         # This happened once, I assume it was just a fluke, so wait a few seconds and try again
@@ -43,8 +45,9 @@ class Fill:
             return
         # If last updated less than 3 days ago, don't update
         current_user = self.session.query(User).filter(User.user_id == int(user_info['user_id'])).first()
-        if (datetime.datetime.now() - current_user.last_updated).days < 3:
-            return
+        if current_user is not None:
+            if (datetime.datetime.now() - current_user.last_updated).days < 3:
+                return
         try:
             beatmaps = self.osu.get_user_best(osu_name, limit=50)
         except ValueError:

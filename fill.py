@@ -72,9 +72,14 @@ class Fill:
         else:
             return False
 
-engine = create_engine("sqlite:///test.db")
-test = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
-test.fill_data("hvick225")
+#engine = create_engine("sqlite:///test3.db")
+#test = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
+#test.fill_data("hvick225")
+#time.sleep(5)
+#Session = sessionmaker(bind=engine)
+#session = Session()
+#session.delete(session.query(User).filter(User.username == "hvick225").first())
+#session.commit()
 #query = test.session.query(User).filter(User.user_id==1845677).order_by(User.id)
 #print(query.all()[2].beatmaps)
 #test.session.add(User(user_id=1845677))

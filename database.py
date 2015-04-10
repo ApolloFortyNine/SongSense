@@ -10,8 +10,8 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer)
+    #id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, primary_key=True)
     username = Column(String)
     count300 = Column(Integer)
     count100 = Column(Integer)
@@ -35,7 +35,7 @@ class Beatmaps(Base):
     __tablename__ = 'beatmaps'
 
     id = Column(Integer, primary_key=True)
-    users_id = Column(Integer, ForeignKey('users.id'))
+    users_id = Column(Integer, ForeignKey('users.user_id'))
     beatmap_id = Column(Integer)
     score = Column(Integer)
     maxcombo = Column(Integer)

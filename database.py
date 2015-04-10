@@ -27,10 +27,9 @@ class User(Base):
     count_rank_s = Column(Integer)
     count_rank_a = Column(Integer)
     country = Column(String)
-
     beatmaps = relationship("Beatmaps", single_parent=True, cascade="save-update, merge, "
-                                                "delete, delete-orphan")
-
+                            "delete, delete-orphan")
+    last_updated = Column(DateTime)
 
 class Beatmaps(Base):
     __tablename__ = 'beatmaps'

@@ -61,7 +61,7 @@ class Fill:
                                 pp_rank=user_info['pp_rank'], level=user_info['level'], pp_raw=user_info['pp_raw'],
                                 accuracy=user_info['accuracy'], count_rank_ss=user_info['count_rank_ss'],
                                 count_rank_s=user_info['count_rank_s'], count_rank_a=user_info['count_rank_a'],
-                                country=user_info['country'], beatmaps=arr))
+                                country=user_info['country'], beatmaps=arr, last_updated=datetime.datetime.now()))
 
         self.session.commit()
         self.session.close()
@@ -72,8 +72,9 @@ class Fill:
         else:
             return False
 
-#test = Fill()
-#test.fill_data(1897182)
+engine = create_engine("sqlite:///test.db")
+test = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
+test.fill_data("hvick225")
 #query = test.session.query(User).filter(User.user_id==1845677).order_by(User.id)
 #print(query.all()[2].beatmaps)
 #test.session.add(User(user_id=1845677))

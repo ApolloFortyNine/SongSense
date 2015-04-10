@@ -49,7 +49,8 @@ class Fill:
                                 count300=beatmap['count300'], count100=beatmap['count100'], count50=beatmap['count50'],
                                 countmiss=beatmap['countmiss'], countkatu=beatmap['countkatu'],
                                 countgeki=beatmap['countgeki'], perfect=beatmap['perfect'],
-                                enabled_mods=beatmap['enabled_mods'], user_id=beatmap['user_id'], date=datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S"),
+                                enabled_mods=beatmap['enabled_mods'], user_id=beatmap['user_id'],
+                                date=datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S"),
                                 rank=beatmap['rank'], pp=beatmap['pp']))
 
         # Using merge here allows it to both refresh user info and beatmap info

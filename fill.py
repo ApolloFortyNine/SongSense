@@ -41,6 +41,10 @@ class Fill:
             return
         elif (int(user_info['pp_rank']) > 300000) | (int(user_info['pp_rank']) == 0):
             return
+        # If last updated less than 3 days ago, don't update
+        current_user = self.session.query(User).filter(User.user_id == int(user_info['user_id'])).first()
+        if (datetime.datetime.now() - current_user.last_updated).days < 3:
+            return
         try:
             beatmaps = self.osu.get_user_best(osu_name, limit=50)
         except ValueError:
@@ -72,15 +76,9 @@ class Fill:
         self.session.commit()
         self.session.close()
 
-    def in_db(self, osu_name):
-        if self.session.query(User).filter(User.username == osu_name).first():
-            return True
-        else:
-            return False
-
 #engine = create_engine("sqlite:///test3.db")
 #test = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
-#test.fill_data("SKSora")
+#test.fill_data("peppy")
 #time.sleep(5)
 #Session = sessionmaker(bind=engine)
 #session = Session()

@@ -37,7 +37,8 @@ class IRCBot:
                 if data == '':
                     continue
                 # This will handle when a line wasn't finished being received
-                if (data.find(":cho.ppy.sh 353 ApolloFortyNine = OSU :") != -1) | begin_read_names:
+                if (data.find(":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :") != -1) |\
+                        begin_read_names:
                     begin_read_names = True
                     if data.find("End of /NAMES list.") == -1:
                         raw_names += data
@@ -52,7 +53,7 @@ class IRCBot:
 
         time.sleep(.05)
         # Remove junk data
-        raw_names = raw_names.replace(":cho.ppy.sh 353 ApolloFortyNine = OSU :", "")
+        raw_names = raw_names.replace((":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :"), "")
         raw_names = raw_names.replace("@", "")
         raw_names = raw_names.replace("+", "")
         names_list = raw_names.split(" ")

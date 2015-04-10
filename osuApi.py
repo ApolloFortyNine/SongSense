@@ -4,9 +4,9 @@ Tested with Python 3.4
 
 Functions
     get_beatmaps(since='', set_id=-1, map_id=-1, user_id=-1)
-    get_user(user, mode=0, user_type='id', event_days=1)
+    get_user(user, mode=0, user_type='string', event_days=1)
     get_scores(map_id, user_id=-1, mode=0)
-    get_user_best(user, mode=0, limit=10, user_type='id')
+    get_user_best(user, mode=0, limit=10, user_type='string')
     get_user_recent(user, mode=0, user_type='id')
     get_match(match_id)
 

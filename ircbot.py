@@ -50,7 +50,6 @@ class IRCBot:
                     else:
                         begin_read_names = False
                 if data.find('PING') != -1:
-                    print(data)
                     n = data.replace('PING ', '')
                     self.send('PONG :' + n)
 

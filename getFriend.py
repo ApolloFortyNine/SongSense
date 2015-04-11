@@ -43,11 +43,12 @@ class GetFriend():
         # print(wubwoofwolf.beatmaps[5].beatmap_id)
         users_dict = {}
         start = time.time()
-
+        number_of_maps = 0
         for x in user_test.beatmaps:
             comparison = self.session.query(Beatmaps).filter((Beatmaps.beatmap_id == x.beatmap_id) &
                                                              (Beatmaps.enabled_mods ==
                                                               x.enabled_mods)).all()
+            number_of_maps += 1
             for y in comparison:
                 if str(y.user_id) in users_dict:
                     users_dict[str(y.user_id)] += 1
@@ -61,7 +62,7 @@ class GetFriend():
         best_match = 0
         best_user = ""
         for x in list(users_dict):
-            if (users_dict[x] > best_match) & (users_dict[x] != 50):
+            if (users_dict[x] > best_match) & (users_dict[x] != number_of_maps):
                 best_match = users_dict[x]
                 best_user = x
         #print(best_user)

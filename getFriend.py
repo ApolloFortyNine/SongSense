@@ -23,6 +23,7 @@ class GetFriend():
         user_test = self.session.query(User).filter(User.username == self.name).first()
         if user_test is None:
             filler = Fill("786b438aa07b502edd057387927406651b6b9698", self.engine)
+            print("inside first user_test")
             filler.fill_data(self.name)
             user_test = self.session.query(User).filter(User.username == self.name).first()
             # Since _ in IRC can be spaces in OSU names, if can't find a user with '_', replace them with ' ' and try

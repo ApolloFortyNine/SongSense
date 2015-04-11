@@ -31,6 +31,7 @@ class Fill:
                 return
         try:
             user_info = self.osu.get_user(osu_name)[0]
+            print(user_info)
         # This happened once, I assume it was just a fluke, so wait a few seconds and try again
         except ValueError:
             time.sleep(5)

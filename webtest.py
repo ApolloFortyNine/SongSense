@@ -12,7 +12,7 @@ class StringGenerator(object):
               <input type="text" value="HappyStick" name="name" />
               <button type="submit">Get friend</button>
             </form>
-            <form method="get" action="get_url">
+            <form method="get" action="get_rec">
               <input type="text" value="HappyStick" name="name" />
               <button type="submit">Get recommendation</button>
             </form>

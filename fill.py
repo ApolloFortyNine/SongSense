@@ -31,19 +31,13 @@ class Fill:
                 return
         try:
             user_info = self.osu.get_user(osu_name)[0]
-            print(user_info)
         # This happened once, I assume it was just a fluke, so wait a few seconds and try again
         except ValueError:
             time.sleep(5)
             user_info = self.osu.get_user(osu_name)[0]
-        # An index error means just an empty array was sent back, which means the user has been removed, or may have
-        # under scores. So call fill_data gain and try with spaces instead of under scores
+        # An index error means just an empty array was sent back, which means the user has been removed
         except IndexError:
-            if osu_name.find('_') != -1:
-                print("hi")
-                self.fill_data(osu_name.replace('_', ' '))
-            else:
-                print("We got a cheater over here")
+            print("We got a cheater over here")
             return
         # I have no idea why this happened.
         except TypeError:

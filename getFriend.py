@@ -9,9 +9,10 @@ from fill import Fill
 
 class GetFriend():
     def __init__(self, name):
-        #engine = create_engine("postgresql://osu:osupassword@localhost/osu")
-        engine = create_engine("sqlite:///test3.db")
-        Session = sessionmaker(bind=engine)
+        #self.engine = create_engine("postgresql://osu:osupassword@localhost/osu")
+        self.engine = create_engine("sqlite:///test3.db")
+        Session = sessionmaker(bind=self.engine)
+        self.matches = 0
         self.session = Session()
         self.name = name
         self.friend_id = self.get_friend_id()
@@ -21,8 +22,9 @@ class GetFriend():
     def get_friend_id(self):
         user_test = self.session.query(User).filter(User.username == self.name).first()
         if user_test is None:
-            filler = Fill()
-            filler.fill_data(user_test)
+            filler = Fill("786b438aa07b502edd057387927406651b6b9698", self.engine)
+            filler.fill_data(self.name)
+            user_test = self.session.query(User).filter(User.username == self.name).first()
         # print(wubwoofwolf.beatmaps[5].beatmap_id)
         users_dict = {}
         start = time.time()
@@ -50,13 +52,14 @@ class GetFriend():
         #print(best_user)
         new_users_dict = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
         #print(new_users_dict)
+        self.matches = users_dict[best_user]
         return best_user
 
     def get_friend_name(self):
         return self.session.query(User).filter(User.user_id == self.friend_id).first().username
 
     def get_friend_url(self):
-        return "https://osu.ppy.sh/u/" + str(self.friend_id)
+        return "https://osu.ppy.sh/u/" + self.username
 
 # friend_getter = getFriend("HappyStick")
 # friend1 = friend_getter.friend_url

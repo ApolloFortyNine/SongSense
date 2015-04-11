@@ -68,7 +68,6 @@ class IRCBot:
                         friend = GetFriend(payload['sender'])
                         self.say(friend.friend_url, payload['sender'])
 
-                print(payload)
             if ((time.time() - start) > 2) & send_names_bool:
                 send_names_bool = False
                 self.send("NAMES " + self.channel)
@@ -104,7 +103,6 @@ class IRCBot:
                     else:
                         begin_read_names = False
                 if data.find('PING') != -1:
-                    print(data)
                     n = data.replace('PING ', '')
                     self.send('PONG :' + n)
             if ((time.time() - start) > 2) & send_names_bool:

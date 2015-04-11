@@ -111,7 +111,7 @@ class GetFriend():
 
     def get_rec_url(self):
         beatmap_id = self.get_rec()
-        return "Map: " + "https://osu.ppy.sh/b/" + str(beatmap_id)
+        return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
 # friend_getter = GetFriend("HappyStick")
 # friend1 = friend_getter.friend_url

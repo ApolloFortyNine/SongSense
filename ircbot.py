@@ -70,6 +70,8 @@ class IRCBot:
                         friend = GetFriend(payload['sender'])
                         self.say("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
                                  friend.friend_url, payload['sender'])
+                        self.say("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
+                                 friend.friend_url, self.nickname)
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

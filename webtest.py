@@ -10,7 +10,11 @@ class StringGenerator(object):
           <body>
             <form method="get" action="get_friend">
               <input type="text" value="HappyStick" name="name" />
-              <button type="submit">Your username</button>
+              <button type="submit">Get friend</button>
+            </form>
+            <form method="get" action="get_url">
+              <input type="text" value="HappyStick" name="name" />
+              <button type="submit">Get recommendation</button>
             </form>
           </body>
         </html>"""
@@ -19,7 +23,12 @@ class StringGenerator(object):
     def get_friend(self, name="HappyStick"):
         friend = GetFriend(name)
         return ("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
-                                 friend.friend_url)
+                friend.friend_url)
+
+    @cherrypy.expose
+    def get_rec(self, name="HappyStick"):
+        friend = GetFriend(name)
+        return "Url: " + friend.get_rec_url()
 
 if __name__ == '__main__':
     cherrypy.server.socket_host = '23.94.12.106'

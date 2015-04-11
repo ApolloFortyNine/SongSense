@@ -1,12 +1,11 @@
 from sqlalchemy import *
 from database import User
 from database import Beatmaps
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref, sessionmaker
+from sqlalchemy.orm import sessionmaker
 import operator
 import time
 
-engine = create_engine("sqlite:///test3.db")
+engine = create_engine("postgresql://osu:osupassword@localhost/osu")
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -19,13 +18,12 @@ session = Session()
 
 
 # wubwoofwolf = session.query(User).filter(User.username == "WubWoofWolf").first()
-user_test = session.query(User).filter(User.username == "CAPSLOCKLOL").first()
+user_test = session.query(User).filter(User.username == "HappyStick").first()
 # print(wubwoofwolf.beatmaps[5].beatmap_id)
 users_dict = {}
 start = time.time()
 
 for x in range(50):
-    print(x)
     comparison = session.query(Beatmaps).filter((Beatmaps.beatmap_id == user_test.beatmaps[x].beatmap_id) &
                                                 (Beatmaps.enabled_mods == user_test.beatmaps[x].enabled_mods)).all()
     for y in comparison:

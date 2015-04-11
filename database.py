@@ -2,7 +2,7 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref, sessionmaker
 
-engine = create_engine("sqlite:///test.db")
+engine = create_engine("postgresql://osu:osupassword@localhost/osu")
 
 Base = declarative_base()
 

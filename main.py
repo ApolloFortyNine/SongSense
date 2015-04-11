@@ -3,7 +3,7 @@ import time
 from fill import Fill
 from sqlalchemy import *
 
-engine = create_engine("sqlite:///test4.db")
+engine = create_engine("postgresql://osu:osupassword@localhost/osu")
 filler = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
 server = "cho.ppy.sh"
 name = "ApolloFortyNine"

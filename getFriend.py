@@ -9,8 +9,8 @@ from fill import Fill
 
 class GetFriend():
     def __init__(self, name):
-        #self.engine = create_engine("postgresql://osu:osupassword@localhost/osu")
-        self.engine = create_engine("sqlite:///test3.db")
+        self.engine = create_engine("postgresql://osu:osupassword@localhost/osu")
+        #self.engine = create_engine("sqlite:///test3.db")
         Session = sessionmaker(bind=self.engine)
         self.matches = 0
         self.session = Session()

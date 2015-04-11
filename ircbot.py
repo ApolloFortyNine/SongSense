@@ -14,6 +14,63 @@ class IRCBot:
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
 
+    def say(self, msg, target):
+        self.send("PRIVMSG %s :%s" % (target, msg))
+
+    def listen(self):
+        self.socket.connect((self.server, self.port))
+        time.sleep(.05)
+        self.send("PASS " + self.password + "\r\n")
+        time.sleep(.05)
+        self.send("NICK " + self.nickname + "\r\n")
+        time.sleep(.05)
+        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" + self.nickname + "\r\n")
+        time.sleep(.05)
+        raw_names = ""
+        start = time.time()
+        begin_read_names = False
+        send_names_bool = False
+
+        while True:
+            buffer = self.socket.recv(4096)
+            lines = buffer.split(b'\n')
+
+            for data in lines:
+                data = str(data.decode('utf-8'))
+                if data == '':
+                    continue
+                # This will handle when a line wasn't finished being received
+                print(data)
+                if (data.find(":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :") != -1) |\
+                        begin_read_names:
+                    begin_read_names = True
+                    if data.find("End of /NAMES list.") == -1:
+                        raw_names += data
+                    else:
+                        begin_read_names = False
+                if data.find('PING') != -1:
+                    print(data)
+                    n = data.replace('PING ', '')
+                    self.send('PONG :' + n)
+
+                args = data.split(None, 3)
+                if len(args) != 4:
+                    continue
+                payload = dict()
+                payload['sender'] = args[0][1:]
+                payload['type'] = args[1]
+                payload['target'] = args[2]
+                payload['msg'] = args[3][1:]
+
+                if payload['type'] == 'PRIVMSG':
+                    if payload['msg'].find('!f') != -1:
+                        self.say("Why would I care?", payload['target'])
+
+                print(payload)
+            if ((time.time() - start) > 2) & send_names_bool:
+                send_names_bool = False
+                self.send("NAMES " + self.channel)
+
     def get_names(self):
         self.socket.connect((self.server, self.port))
         time.sleep(.05)
@@ -45,7 +102,8 @@ class IRCBot:
                     else:
                         begin_read_names = False
                 if data.find('PING') != -1:
-                    n = data.split(':')[1]
+                    print(data)
+                    n = data.replace('PING ', '')
                     self.send('PONG :' + n)
             if ((time.time() - start) > 2) & send_names_bool:
                 send_names_bool = False
@@ -58,3 +116,11 @@ class IRCBot:
         raw_names = raw_names.replace("+", "")
         names_list = raw_names.split(" ")
         return names_list
+
+# server = "cho.ppy.sh"
+# name = "ApolloFortyNine"
+# port = 6667
+# channel = "OSU"
+# password = "784062"
+# ircbot = IRCBot(server, name, port, channel, password)
+# ircbot.listen()

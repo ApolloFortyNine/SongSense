@@ -71,6 +71,8 @@ class GetFriend():
         return "https://osu.ppy.sh/u/" + self.username
 
     def get_rec(self):
+        if self.username == 'DoesNotExist':
+            return 'FAILED'
         top_friends_list = []
         user_beatmaps_dict = {}
         # Creates an array of User objects, each one containing the user's whole row
@@ -106,7 +108,7 @@ class GetFriend():
             if map_rec_pool == 0:
                 break
         if not beatmaps_list:
-            return 'failed'
+            return 'FAILED'
         return beatmaps_list[0]
 
     def get_rec_url(self):

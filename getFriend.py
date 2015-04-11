@@ -82,12 +82,13 @@ class GetFriend():
         for x in top5_list:
             comparison = self.session.query(Beatmaps).filter(Beatmaps.user_id == x.user_id).all()
             for y in comparison:
-                if (str(y.beatmap_id) + str(y.enabled_mods)) in user_beatmaps_dict:
+                beatmap_enabled_mods_str = (str(y.beatmap_id) + str(y.enabled_mods))
+                if beatmap_enabled_mods_str in user_beatmaps_dict:
                     continue
-                if (str(y.beatmap_id) + str(y.enabled_mods)) in beatmaps_dict:
-                    beatmaps_dict[str(y.beatmap_id)] += 1
+                if beatmap_enabled_mods_str in beatmaps_dict:
+                    beatmaps_dict[beatmap_enabled_mods_str] += 1
                 else:
-                    beatmaps_dict[str(y.beatmap_id)] = 1
+                    beatmaps_dict[beatmap_enabled_mods_str] = 1
 
         beatmaps_list = sorted(beatmaps_dict.items(), key=operator.itemgetter(1), reverse=True)
         return beatmaps_list[0:5]

@@ -25,11 +25,22 @@ class GetFriend():
             filler = Fill("786b438aa07b502edd057387927406651b6b9698", self.engine)
             filler.fill_data(self.name)
             user_test = self.session.query(User).filter(User.username == self.name).first()
-            if user_test is None:
+            # Since _ in IRC can be spaces in OSU names, if can't find a user with '_', replace them with ' ' and try
+            # again. If still can't find the user, give up.
+            if (user_test is None) & (self.name.find('_') == -1):
                 self.friend_id = 123456
                 self.username = 'DoesNotExist'
                 self.friend_url = 'none'
                 return
+            elif user_test is None:
+                self.name = self.name.replace('_', ' ')
+                filler.fill_data(self.name)
+                user_test = self.session.query(User).filter(User.username == self.name).first()
+                if user_test is None:
+                    self.friend_id = 123456
+                    self.username = 'DoesNotExist'
+                    self.friend_url = 'none'
+                    return
         # print(wubwoofwolf.beatmaps[5].beatmap_id)
         users_dict = {}
         start = time.time()

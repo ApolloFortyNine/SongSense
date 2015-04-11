@@ -9,8 +9,8 @@ from fill import Fill
 
 class GetFriend():
     def __init__(self, name):
-        #self.engine = create_engine("postgresql://osu:osupassword@localhost/osu")
-        self.engine = create_engine("sqlite:///test3.db")
+        self.engine = create_engine("postgresql://osu:osupassword@localhost/osu")
+        #self.engine = create_engine("sqlite:///test3.db")
         Session = sessionmaker(bind=self.engine)
         self.matches = 0
         self.top_friends = []
@@ -106,8 +106,8 @@ class GetFriend():
                 break
         return beatmaps_list[0]
 
-friend_getter = GetFriend("HappyStick")
-friend1 = friend_getter.friend_url
-print(friend1)
-print(friend_getter.get_rec())
-print(friend_getter.username)
+# friend_getter = GetFriend("HappyStick")
+# friend1 = friend_getter.friend_url
+# print(friend1)
+# print(friend_getter.get_rec())
+# print(friend_getter.username)

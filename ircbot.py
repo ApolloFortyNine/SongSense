@@ -74,7 +74,7 @@ class IRCBot:
                                  friend.friend_url, self.nickname)
                     if payload['msg'].find('!r') != -1:
                         friend = GetFriend(payload['sender'])
-                        self.say("Url: " + friend.get_rec_url())
+                        self.say("Url: " + friend.get_rec_url(), payload['sender'])
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

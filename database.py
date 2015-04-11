@@ -11,17 +11,17 @@ class User(Base):
     __tablename__ = 'users'
 
     #id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, primary_key=True)
+    user_id = Column(BigInteger, primary_key=True)
     username = Column(String)
-    count300 = Column(Integer)
-    count100 = Column(Integer)
+    count300 = Column(BigInteger)
+    count100 = Column(BigInteger)
     count50 = Column(Integer)
     play_count = Column(Integer)
-    ranked_score = Column(Integer)
-    total_score = Column(Integer)
+    ranked_score = Column(BigInteger)
+    total_score = Column(BigInteger)
     pp_rank = Column(Integer)
     level = Column(Float)
-    pp_raw = Column(Integer)
+    pp_raw = Column(Float)
     accuracy = Column(Float)
     count_rank_ss = Column(Integer)
     count_rank_s = Column(Integer)
@@ -35,7 +35,7 @@ class Beatmaps(Base):
     __tablename__ = 'beatmaps'
 
     id = Column(Integer, primary_key=True)
-    users_id = Column(Integer, ForeignKey('users.user_id'))
+    users_id = Column(BigInteger, ForeignKey('users.user_id'))
     beatmap_id = Column(Integer)
     score = Column(Integer)
     maxcombo = Column(Integer)

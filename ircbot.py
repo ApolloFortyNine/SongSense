@@ -28,9 +28,7 @@ class IRCBot:
         self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" + self.nickname + "\r\n")
         time.sleep(.05)
         raw_names = ""
-        start = time.time()
         begin_read_names = False
-        send_names_bool = False
 
         while True:
             buffer = self.socket.recv(4096)
@@ -68,10 +66,6 @@ class IRCBot:
                         friend = GetFriend(payload['sender'])
                         self.say("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
                                  friend.friend_url, payload['sender'])
-
-            if ((time.time() - start) > 2) & send_names_bool:
-                send_names_bool = False
-                self.send("NAMES " + self.channel)
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

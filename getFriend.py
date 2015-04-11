@@ -61,7 +61,11 @@ class GetFriend():
         return best_user
 
     def get_friend_name(self):
-        return self.session.query(User).filter(User.user_id == self.friend_id).first().username
+        try:
+            username = self.session.query(User).filter(User.user_id == self.friend_id).first().username
+        except AttributeError:
+            username = 'DoesNotExist'
+        return username
 
     def get_friend_url(self):
         return "https://osu.ppy.sh/u/" + self.username

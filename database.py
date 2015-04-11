@@ -1,8 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref, sessionmaker
-
-engine = create_engine("postgresql://osu:osupassword@localhost/osu")
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -10,7 +8,6 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
 
-    #id = Column(Integer, primary_key=True)
     user_id = Column(BigInteger, primary_key=True)
     username = Column(String)
     count300 = Column(BigInteger)
@@ -30,6 +27,7 @@ class User(Base):
     beatmaps = relationship("Beatmaps", single_parent=True, cascade="save-update, merge, "
                             "delete, delete-orphan")
     last_updated = Column(DateTime)
+
 
 class Beatmaps(Base):
     __tablename__ = 'beatmaps'
@@ -51,14 +49,3 @@ class Beatmaps(Base):
     date = Column(DateTime)
     rank = Column(String)
     pp = Column(Float)
-
-#Session = sessionmaker(bind=engine)
-
-#session = Session()
-
-#test = User(username='test')
-#test.beatmaps = [Beatmaps(beatmap_id=50), Beatmaps(beatmap_id=51)]
-#print(test.beatmaps)
-#session.add(test)
-#session.commit()
-#session.close()

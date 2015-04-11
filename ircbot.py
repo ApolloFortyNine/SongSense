@@ -1,5 +1,6 @@
 import socket
 import time
+from getFriend import GetFriend
 
 
 class IRCBot:
@@ -64,7 +65,8 @@ class IRCBot:
 
                 if payload['type'] == 'PRIVMSG':
                     if payload['msg'].find('!f') != -1:
-                        self.say("Why would I care?", payload['target'])
+                        friend = GetFriend(payload['sender'])
+                        self.say(friend.friend_url, payload['sender'])
 
                 print(payload)
             if ((time.time() - start) > 2) & send_names_bool:

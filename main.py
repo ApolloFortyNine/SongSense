@@ -35,3 +35,4 @@ for name in names:
         count = 0
         start = time.time()
 print((time.time() - true_start) / count_all)
+print(time.time() - true_start)

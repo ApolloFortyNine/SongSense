@@ -39,6 +39,7 @@ class Fill:
         # under scores. So call fill_data gain and try with spaces instead of under scores
         except IndexError:
             if osu_name.find('_') != -1:
+                print("hi")
                 self.fill_data(osu_name.replace('_', ' '))
             else:
                 print("We got a cheater over here")

@@ -4,6 +4,7 @@ from database import Beatmaps
 from sqlalchemy.orm import sessionmaker
 import operator
 import time
+from fill import Fill
 
 
 class GetFriend():
@@ -19,6 +20,9 @@ class GetFriend():
 
     def get_friend_id(self):
         user_test = self.session.query(User).filter(User.username == self.name).first()
+        if user_test is None:
+            filler = Fill()
+            filler.fill_data(user_test)
         # print(wubwoofwolf.beatmaps[5].beatmap_id)
         users_dict = {}
         start = time.time()

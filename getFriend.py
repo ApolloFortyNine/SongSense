@@ -26,6 +26,9 @@ class GetFriend():
             filler.fill_data(self.name)
             user_test = self.session.query(User).filter(User.username == self.name).first()
             if user_test is None:
+                self.friend_id = 123456
+                self.username = 'DoesNotExist'
+                self.friend_url = 'none'
                 return
         # print(wubwoofwolf.beatmaps[5].beatmap_id)
         users_dict = {}

@@ -9,9 +9,9 @@ from database import Base
 import time
 import datetime
 
+# TODO Create configuration class and use those properties everywhere
 # TODO Take top 3 results, find most played song not already played
 # TODO Create webserver
-# TODO Make sure if someone changes their name it works (remove old by user_id?; test manually)
 # TODO Fix enabled mods issue (sudden death). It's bitwise, might be able to figure something out fancily
 
 

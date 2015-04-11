@@ -27,6 +27,7 @@ class GetFriend():
             user_test = self.session.query(User).filter(User.username == self.name).first()
             # Since _ in IRC can be spaces in OSU names, if can't find a user with '_', replace them with ' ' and try
             # again. If still can't find the user, give up.
+            # Possibly raise an error here (ValueError).
             if (user_test is None) & (self.name.find('_') == -1):
                 self.friend_id = 123456
                 self.username = 'DoesNotExist'
@@ -40,9 +41,7 @@ class GetFriend():
                     self.username = 'DoesNotExist'
                     self.friend_url = 'none'
                     return
-        # print(wubwoofwolf.beatmaps[5].beatmap_id)
         users_dict = {}
-        start = time.time()
         number_of_maps = 0
         for x in user_test.beatmaps:
             comparison = self.session.query(Beatmaps).filter((Beatmaps.beatmap_id == x.beatmap_id) &
@@ -54,22 +53,9 @@ class GetFriend():
                     users_dict[str(y.user_id)] += 1
                 else:
                     users_dict[str(y.user_id)] = 1
-        # time_passed = (time.time() - start)
-        # print(time_passed)
-        # print("\n")
-        # new_users_dict = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
-        # print(new_users_dict)
-        best_match = 0
-        best_user = ""
-        for x in list(users_dict):
-            if (users_dict[x] > best_match) & (users_dict[x] != number_of_maps):
-                best_match = users_dict[x]
-                best_user = x
-        #print(best_user)
-        new_users_dict = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
-        #print(new_users_dict)
-        self.matches = users_dict[best_user]
-        return best_user
+        users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
+        self.matches = users_list[1][1]
+        return users_list[1][0]
 
     def get_friend_name(self):
         try:
@@ -81,8 +67,8 @@ class GetFriend():
     def get_friend_url(self):
         return "https://osu.ppy.sh/u/" + self.username
 
-friend_getter = GetFriend("HappyStick")
-friend1 = friend_getter.friend_url
-print(friend1)
+# friend_getter = GetFriend("HappyStick")
+# friend1 = friend_getter.friend_url
+# print(friend1)
 # print(friend_getter.friend_id)
 # print(friend_getter.username)

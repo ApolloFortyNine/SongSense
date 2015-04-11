@@ -59,6 +59,7 @@ class IRCBot:
                     continue
                 payload = dict()
                 payload['sender'] = args[0][1:]
+                payload['sender'] = payload['sender'].split('!')[0]
                 payload['type'] = args[1]
                 payload['target'] = args[2]
                 payload['msg'] = args[3][1:]
@@ -66,7 +67,8 @@ class IRCBot:
                 if payload['type'] == 'PRIVMSG':
                     if payload['msg'].find('!f') != -1:
                         friend = GetFriend(payload['sender'])
-                        self.say(friend.friend_url, payload['sender'])
+                        self.say("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
+                                 friend.friend_url, payload['sender'])
 
             if ((time.time() - start) > 2) & send_names_bool:
                 send_names_bool = False

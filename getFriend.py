@@ -44,10 +44,10 @@ class GetFriend():
         users_dict = {}
         start = time.time()
 
-        for x in range(50):
-            comparison = self.session.query(Beatmaps).filter((Beatmaps.beatmap_id == user_test.beatmaps[x].beatmap_id) &
+        for x in user_test.beatmaps:
+            comparison = self.session.query(Beatmaps).filter((Beatmaps.beatmap_id == x.beatmap_id) &
                                                              (Beatmaps.enabled_mods ==
-                                                              user_test.beatmaps[x].enabled_mods)).all()
+                                                              x.enabled_mods)).all()
             for y in comparison:
                 if str(y.user_id) in users_dict:
                     users_dict[str(y.user_id)] += 1
@@ -80,8 +80,8 @@ class GetFriend():
     def get_friend_url(self):
         return "https://osu.ppy.sh/u/" + self.username
 
-# friend_getter = getFriend("HappyStick")
-# friend1 = friend_getter.friend_url
-# print(friend1)
+friend_getter = GetFriend("HappyStick")
+friend1 = friend_getter.friend_url
+print(friend1)
 # print(friend_getter.friend_id)
 # print(friend_getter.username)

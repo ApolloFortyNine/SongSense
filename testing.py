@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship, backref, sessionmaker
 import operator
 import time
 
-engine = create_engine("sqlite:///test.db")
+engine = create_engine("sqlite:///test3.db")
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -25,6 +25,7 @@ users_dict = {}
 start = time.time()
 
 for x in range(50):
+    print(x)
     comparison = session.query(Beatmaps).filter((Beatmaps.beatmap_id == user_test.beatmaps[x].beatmap_id) &
                                                 (Beatmaps.enabled_mods == user_test.beatmaps[x].enabled_mods)).all()
     for y in comparison:

@@ -18,7 +18,8 @@ class StringGenerator(object):
     @cherrypy.expose
     def get_friend(self, name="HappyStick"):
         friend = GetFriend(name)
-        return friend.username
+        return ("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
+                                 friend.friend_url)
 
 if __name__ == '__main__':
     cherrypy.quickstart(StringGenerator())

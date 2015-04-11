@@ -22,4 +22,5 @@ class StringGenerator(object):
                                  friend.friend_url)
 
 if __name__ == '__main__':
+    cherrypy.server.socket_host = '23.94.12.106'
     cherrypy.quickstart(StringGenerator())

@@ -23,6 +23,7 @@ for name in names:
     filled = filler.fill_data(name)
     if filled is not None:
         count += 1
+        count_all += 1
     time_passed = (time.time() - start)
     if time_passed <= 60 and (count >= 400):
         print("Throttle")

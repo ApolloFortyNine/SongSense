@@ -3,7 +3,7 @@ from config import Config
 from osuApi import OsuApi
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
-from database import Beatmaps
+from database import Beatmap
 from database import User
 from database import Base
 import time
@@ -25,11 +25,6 @@ class Fill:
         Base.metadata.create_all(self.engine, checkfirst=True)
 
     def fill_data(self, osu_name):
-        # If last updated less than 3 days ago, don't update
-        current_user = self.session.query(User).filter(User.username == osu_name).first()
-        if current_user is not None:
-            if (datetime.datetime.now() - current_user.last_updated).days < 3:
-                return
         try:
             user_info = self.osu.get_user(osu_name)[0]
         # This happened once, I assume it was just a fluke, so wait a few seconds and try again
@@ -57,13 +52,13 @@ class Fill:
 
         # Create an array of Beatmaps objects to insert into a User. Probably could be done better but it works
         for beatmap in beatmaps:
-            arr.append(Beatmaps(beatmap_id=beatmap['beatmap_id'], score=beatmap['score'], maxcombo=beatmap['maxcombo'],
+            arr.append(Beatmap(beatmap_id=beatmap['beatmap_id'], score=beatmap['score'], maxcombo=beatmap['maxcombo'],
                                 count300=beatmap['count300'], count100=beatmap['count100'], count50=beatmap['count50'],
                                 countmiss=beatmap['countmiss'], countkatu=beatmap['countkatu'],
                                 countgeki=beatmap['countgeki'], perfect=beatmap['perfect'],
                                 enabled_mods=beatmap['enabled_mods'], user_id=beatmap['user_id'],
                                 date=datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S"),
-                                rank=beatmap['rank'], pp=beatmap['pp']))
+                                rank=beatmap['rank'], pp=beatmap['pp'], pp_rank=user_info['pp_rank']))
 
         # Using merge here allows it to both refresh user info and beatmap info. Also handles changed name, since
         # user_id is the primary key

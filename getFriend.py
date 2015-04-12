@@ -1,11 +1,13 @@
 from sqlalchemy import *
 from database import User
-from database import Beatmaps
+from database import Beatmap
+from database import Friend
 from sqlalchemy.orm import sessionmaker
 import operator
 import random
 from fill import Fill
 from config import Config
+import datetime
 
 
 class GetFriend():
@@ -48,9 +50,8 @@ class GetFriend():
         users_dict = {}
         number_of_maps = 0
         for x in self.user_row.beatmaps:
-            comparison = self.session.query(Beatmaps).filter((Beatmaps.beatmap_id == x.beatmap_id) &
-                                                             (Beatmaps.enabled_mods ==
-                                                              x.enabled_mods)).all()
+            comparison = self.session.query(Beatmap).filter((Beatmap.beatmap_id == x.beatmap_id) &
+                                                             (Beatmap.enabled_mods == x.enabled_mods)).all()
             number_of_maps += 1
             for y in comparison:
                 if str(y.user_id) in users_dict:
@@ -60,6 +61,16 @@ class GetFriend():
         users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
         self.matches = users_list[1][1]
         self.top_friends = users_list[1:11]
+        friend_list = []
+        # Save friends in their own table, so we can skip searches on friends who are only a day or so old
+        for x in users_list[1:]:
+            user = self.session.query(User).filter(User.user_id == int(x[0])).first()
+            friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id, username=user.username,
+                                      pp_rank=user.pp_rank, matches=x[1], last_updated=datetime.datetime.now())
+            friend_list.append(friend)
+        self.user_row.friends = friend_list
+        self.session.commit()
+        #self.session.merge(Friend(user_id=))
         return users_list[1][0]
 
     def get_friend_name(self):
@@ -88,7 +99,7 @@ class GetFriend():
         beatmaps_dict = {}
         # Here we create a dictionary of all beatmaps and their rate of occurrence
         for x in top_friends_list:
-            comparison = self.session.query(Beatmaps).filter(Beatmaps.user_id == x.user_id).all()
+            comparison = self.session.query(Beatmap).filter(Beatmap.user_id == x.user_id).all()
             for y in comparison:
                 # Creates unique string with mods
                 beatmap_enabled_mods_str = (str(y.beatmap_id) + str(y.enabled_mods))

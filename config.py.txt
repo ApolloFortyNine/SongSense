@@ -1,5 +1,5 @@
 """
-Insert your info here
+Insert your info here, remove .txt
 Engine_str is the part in quotes from http://docs.sqlalchemy.org/en/latest/core/engines.html
 If just testing out on your own, sqlite is included by default with python, however can only handle one write at a time
 """

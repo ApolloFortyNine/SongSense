@@ -3,7 +3,7 @@ from database import User
 from database import Beatmaps
 from sqlalchemy.orm import sessionmaker
 import operator
-import time
+import random
 from fill import Fill
 from config import Config
 
@@ -111,7 +111,8 @@ class GetFriend():
                 break
         if not beatmaps_list:
             return 'FAILED'
-        return beatmaps_list[0]
+        rand_int = random.randrange(0, 10)
+        return beatmaps_list[rand_int]
 
     def get_rec_url(self):
         beatmap_id = self.get_rec()

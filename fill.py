@@ -3,16 +3,11 @@ from config import Config
 from osuApi import OsuApi
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
-from database import Beatmaps
+from database import Beatmap
 from database import User
 from database import Base
 import time
 import datetime
-
-# TODO Create configuration class and use those properties everywhere
-# TODO Take top 3 results, find most played song not already played
-# TODO Create webserver
-# TODO Fix enabled mods issue (sudden death). It's bitwise, might be able to figure something out fancily
 
 
 class Fill:
@@ -57,13 +52,13 @@ class Fill:
 
         # Create an array of Beatmaps objects to insert into a User. Probably could be done better but it works
         for beatmap in beatmaps:
-            arr.append(Beatmaps(beatmap_id=beatmap['beatmap_id'], score=beatmap['score'], maxcombo=beatmap['maxcombo'],
+            arr.append(Beatmap(beatmap_id=beatmap['beatmap_id'], score=beatmap['score'], maxcombo=beatmap['maxcombo'],
                                 count300=beatmap['count300'], count100=beatmap['count100'], count50=beatmap['count50'],
                                 countmiss=beatmap['countmiss'], countkatu=beatmap['countkatu'],
                                 countgeki=beatmap['countgeki'], perfect=beatmap['perfect'],
                                 enabled_mods=beatmap['enabled_mods'], user_id=beatmap['user_id'],
                                 date=datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S"),
-                                rank=beatmap['rank'], pp=beatmap['pp']))
+                                rank=beatmap['rank'], pp=beatmap['pp'], pp_rank=user_info['pp_rank']))
 
         # Using merge here allows it to both refresh user info and beatmap info. Also handles changed name, since
         # user_id is the primary key

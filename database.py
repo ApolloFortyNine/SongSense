@@ -6,7 +6,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     user_id = Column(BigInteger, primary_key=True)
     username = Column(String)
@@ -32,10 +32,10 @@ class User(Base):
 
 
 class Beatmap(Base):
-    __tablename__ = 'beatmap'
+    __tablename__ = 'beatmaps'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(BigInteger, ForeignKey('user.user_id'))
+    user_id = Column(BigInteger, ForeignKey('users.user_id'))
     beatmap_id = Column(Integer)
     score = Column(Integer)
     maxcombo = Column(Integer)
@@ -54,10 +54,10 @@ class Beatmap(Base):
 
 
 class Friend(Base):
-    __tablename__ = 'friend'
+    __tablename__ = 'friends'
 
     id = Column(Integer, primary_key=True)
-    owner_id = Column(BigInteger, ForeignKey('user.user_id'))
+    owner_id = Column(BigInteger, ForeignKey('users.user_id'))
     user_id = Column(BigInteger)
     username = Column(String)
     pp_rank = Column(Integer)

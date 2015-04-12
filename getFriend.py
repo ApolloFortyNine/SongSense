@@ -63,7 +63,7 @@ class GetFriend():
         self.top_friends = users_list[1:11]
         friend_list = []
         # Save friends in their own table, so we can skip searches on friends who are only a day or so old
-        for x in users_list[1:]:
+        for x in users_list[1:11]:
             user = self.session.query(User).filter(User.user_id == int(x[0])).first()
             friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id, username=user.username,
                                       pp_rank=user.pp_rank, matches=x[1], last_updated=datetime.datetime.now())

@@ -2,14 +2,16 @@ from ircbot import IRCBot
 import time
 from fill import Fill
 from sqlalchemy import *
+from config import Config
 
-engine = create_engine("postgresql://osu:osupassword@localhost/osu")
-filler = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
-server = "cho.ppy.sh"
-name = "ApolloFortyNine"
-port = 6667
-channel = "OSU"
-password = "784062"
+config = Config()
+engine = create_engine(config.engine_str)
+filler = Fill(engine)
+server = config.irc_server
+name = config.irc_name
+port = config.irc_port
+channel = config.irc_channel
+password = config.irc_password
 ircbot = IRCBot(server, name, port, channel, password)
 names = ircbot.get_names()
 print(names[1])

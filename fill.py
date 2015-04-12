@@ -1,5 +1,5 @@
-#Class to fill the database with user and beatmap info
-
+# Class to fill the database with user and beatmap info
+from config import Config
 from osuApi import OsuApi
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
@@ -16,8 +16,9 @@ import datetime
 
 
 class Fill:
-    def __init__(self, osu_api_key, engine):
-        self.osu = OsuApi(osu_api_key)
+    def __init__(self, engine):
+        self.config = Config()
+        self.osu = OsuApi(self.config.osu_api_key)
         self.engine = engine
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()

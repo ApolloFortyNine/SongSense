@@ -1,9 +1,11 @@
 from ircbot import IRCBot
+from config import Config
 
-server = "cho.ppy.sh"
-name = "ApolloFortyNine"
-port = 6667
-channel = "OSU"
-password = "784062"
+config = Config()
+server = config.irc_server
+name = config.irc_name
+port = config.irc_port
+channel = config.irc_channel
+password = config.irc_password
 ircbot = IRCBot(server, name, port, channel, password)
 ircbot.listen()

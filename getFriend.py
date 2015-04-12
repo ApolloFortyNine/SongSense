@@ -5,11 +5,13 @@ from sqlalchemy.orm import sessionmaker
 import operator
 import time
 from fill import Fill
+from config import Config
 
 
 class GetFriend():
     def __init__(self, name):
-        self.engine = create_engine("postgresql://osu:osupassword@localhost/osu")
+        self.config = Config()
+        self.engine = create_engine(self.config.engine_str)
         #self.engine = create_engine("sqlite:///test3.db")
         Session = sessionmaker(bind=self.engine)
         self.matches = 0
@@ -24,7 +26,7 @@ class GetFriend():
 
     def get_friend_id(self):
         if self.user_row is None:
-            filler = Fill("786b438aa07b502edd057387927406651b6b9698", self.engine)
+            filler = Fill(self.engine)
             filler.fill_data(self.name)
             self.user_row = self.session.query(User).filter(User.username == self.name).first()
             # Since _ in IRC can be spaces in OSU names, if can't find a user with '_', replace them with ' ' and try

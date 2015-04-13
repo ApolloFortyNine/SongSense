@@ -59,8 +59,10 @@ class GetFriend():
         print(datetime.datetime.now())
         for x in self.user_row.beatmaps:
             print("BEFORE" + str(datetime.datetime.now()))
-            comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
-                filter(Beatmap.enabled_mods == x.enabled_mods).all()
+            #comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
+            #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
+            comparison = self.engine.execute("select * from beatmaps where beatmaps.enabled_mods=" +
+                                             str(x.enabled_mods) + " AND beatmaps.beatmap_id=" + str(x.beatmap_id))
             print("AFTER" + str(datetime.datetime.now()))
             number_of_maps += 1
             for y in comparison:

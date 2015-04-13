@@ -12,6 +12,7 @@ import datetime
 
 class GetFriend():
     def __init__(self, name):
+        print("First " + str(datetime.datetime.now()))
         self.config = Config()
         self.engine = create_engine(self.config.engine_str)
         #self.engine = create_engine("sqlite:///test3.db")
@@ -20,11 +21,17 @@ class GetFriend():
         self.top_friends = []
         self.session = Session()
         self.name = name
+        print("Before user " + str(datetime.datetime.now()))
         self.user_row = self.session.query(User).filter(User.username == self.name).first()
+        print("Before friend_id " + str(datetime.datetime.now()))
         self.friend_id = self.get_friend_id()
+        print("Before username " + str(datetime.datetime.now()))
         self.username = self.get_friend_name()
+        print("Before friend_url " + str(datetime.datetime.now()))
         self.friend_url = self.get_friend_url()
+        print("Before rec_url " + str(datetime.datetime.now()))
         self.rec_url = self.get_rec_url()
+        print("Last " + str(datetime.datetime.now()))
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -49,21 +56,15 @@ class GetFriend():
                     return
         users_dict = {}
         number_of_maps = 0
-        start_time = datetime.datetime.now()
         for x in self.user_row.beatmaps:
             comparison = self.session.query(Beatmap).filter((Beatmap.beatmap_id == x.beatmap_id) &
                                                              (Beatmap.enabled_mods == x.enabled_mods)).all()
             number_of_maps += 1
-            print("Before dict" + str(number_of_maps) + str((datetime.datetime.now())))
             for y in comparison:
                 if str(y.user_id) in users_dict:
                     users_dict[str(y.user_id)] += 1
                 else:
                     users_dict[str(y.user_id)] = 1
-            print("After dict" + str(number_of_maps) + str((datetime.datetime.now())))
-        print("End dict and queries")
-        print((datetime.datetime.now()))
-        start_time = (datetime.datetime.now())
         users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
         self.matches = users_list[1][1]
         self.top_friends = users_list[1:11]
@@ -74,8 +75,6 @@ class GetFriend():
             friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id, username=user.username,
                                       pp_rank=user.pp_rank, matches=x[1], last_updated=datetime.datetime.now())
             friend_list.append(friend)
-        print("End get user queries")
-        print((datetime.datetime.now()))
         self.user_row.friends = friend_list
         self.session.commit()
         #self.session.merge(Friend(user_id=))

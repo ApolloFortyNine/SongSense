@@ -56,6 +56,7 @@ class GetFriend():
                     return
         users_dict = {}
         number_of_maps = 0
+        print(datetime.datetime.now())
         for x in self.user_row.beatmaps:
             comparison = self.session.query(Beatmap).filter((Beatmap.beatmap_id == x.beatmap_id) &
                                                              (Beatmap.enabled_mods == x.enabled_mods)).all()
@@ -65,6 +66,7 @@ class GetFriend():
                     users_dict[str(y.user_id)] += 1
                 else:
                     users_dict[str(y.user_id)] = 1
+        print(datetime.datetime.now())
         users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
         self.matches = users_list[1][1]
         self.top_friends = users_list[1:11]

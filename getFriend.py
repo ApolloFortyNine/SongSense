@@ -12,7 +12,6 @@ import datetime
 
 class GetFriend():
     def __init__(self, name):
-        print("First " + str(datetime.datetime.now()))
         self.config = Config()
         self.engine = create_engine(self.config.engine_str)
         #self.engine = create_engine("sqlite:///test3.db")
@@ -21,17 +20,11 @@ class GetFriend():
         self.top_friends = []
         self.session = Session()
         self.name = name
-        print("Before user " + str(datetime.datetime.now()))
         self.user_row = self.session.query(User).filter(User.username == self.name).first()
-        print("Before friend_id " + str(datetime.datetime.now()))
         self.friend_id = self.get_friend_id()
-        print("Before username " + str(datetime.datetime.now()))
         self.username = self.get_friend_name()
-        print("Before friend_url " + str(datetime.datetime.now()))
         self.friend_url = self.get_friend_url()
-        print("Before rec_url " + str(datetime.datetime.now()))
         self.rec_url = self.get_rec_url()
-        print("Last " + str(datetime.datetime.now()))
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -56,10 +49,10 @@ class GetFriend():
                     return
         users_dict = {}
         number_of_maps = 0
-        print(datetime.datetime.now())
         for x in self.user_row.beatmaps:
-            #comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
+            # comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
             #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
+            # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they don't need to be)
             comparison = self.engine.execute("SELECT * FROM beatmaps WHERE beatmaps.enabled_mods=" +
                                              str(x.enabled_mods) + " AND beatmaps.beatmap_id=" + str(x.beatmap_id))
             number_of_maps += 1
@@ -68,7 +61,6 @@ class GetFriend():
                     users_dict[str(y.user_id)] += 1
                 else:
                     users_dict[str(y.user_id)] = 1
-        print(datetime.datetime.now())
         users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
         self.matches = users_list[1][1]
         self.top_friends = users_list[1:11]
@@ -81,7 +73,6 @@ class GetFriend():
             friend_list.append(friend)
         self.user_row.friends = friend_list
         self.session.commit()
-        #self.session.merge(Friend(user_id=))
         return users_list[1][0]
 
     def get_friend_name(self):

@@ -8,6 +8,7 @@ import random
 from fill import Fill
 from config import Config
 import datetime
+import time
 
 
 class GetFriend():
@@ -49,15 +50,21 @@ class GetFriend():
                     return
         users_dict = {}
         number_of_maps = 0
+        start_time = time.time()
         for x in self.user_row.beatmaps:
             comparison = self.session.query(Beatmap).filter((Beatmap.beatmap_id == x.beatmap_id) &
                                                              (Beatmap.enabled_mods == x.enabled_mods)).all()
             number_of_maps += 1
+            print("Before dict" + str(number_of_maps) + str(time.time()-start_time))
             for y in comparison:
                 if str(y.user_id) in users_dict:
                     users_dict[str(y.user_id)] += 1
                 else:
                     users_dict[str(y.user_id)] = 1
+            print("After dict" + str(number_of_maps) + str(time.time()-start_time))
+        print("End dict and queries")
+        print(time.time() - start_time)
+        start_time = time.time()
         users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
         self.matches = users_list[1][1]
         self.top_friends = users_list[1:11]
@@ -68,6 +75,8 @@ class GetFriend():
             friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id, username=user.username,
                                       pp_rank=user.pp_rank, matches=x[1], last_updated=datetime.datetime.now())
             friend_list.append(friend)
+        print("End get user queries")
+        print(time.time()-start_time)
         self.user_row.friends = friend_list
         self.session.commit()
         #self.session.merge(Friend(user_id=))

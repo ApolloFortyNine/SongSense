@@ -58,8 +58,8 @@ class GetFriend():
         number_of_maps = 0
         print(datetime.datetime.now())
         for x in self.user_row.beatmaps:
-            comparison = self.session.query(Beatmap).filter((Beatmap.beatmap_id == x.beatmap_id) &
-                                                             (Beatmap.enabled_mods == x.enabled_mods)).all()
+            comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
+                filter(Beatmap.enabled_mods == x.enabled_mods).all()
             number_of_maps += 1
             for y in comparison:
                 if str(y.user_id) in users_dict:

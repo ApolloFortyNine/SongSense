@@ -129,8 +129,10 @@ class GetFriend():
         self.recs = beatmaps_list
         return beatmaps_list[rand_int]
 
-    def get_rec_url(self):
-        beatmap_id = self.get_rec()
+    def get_rec_url(self, rec_num=None):
+        if rec_num is None:
+            rec_num = random.randrange(0, 10)
+        beatmap_id = self.recs[rec_num]
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
     def get_mods_str(self, mods_int):

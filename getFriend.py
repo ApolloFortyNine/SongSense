@@ -25,6 +25,7 @@ class GetFriend():
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
         self.rec_url = self.get_rec_url()
+        self.recs = []
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -125,6 +126,7 @@ class GetFriend():
         if not beatmaps_list:
             return 'FAILED'
         rand_int = random.randrange(0, 10)
+        self.recs = beatmaps_list
         return beatmaps_list[rand_int]
 
     def get_rec_url(self):

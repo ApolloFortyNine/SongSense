@@ -11,13 +11,13 @@ class IRCBot:
         self.port = port
         self.channel = channel
         self.password = password
-        self.send_allowed = False
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
 
     def say(self, msg, target):
         self.send("PRIVMSG %s :%s" % (target, msg))
+        time.sleep(1)
 
     def listen(self):
         self.socket.connect((self.server, self.port))
@@ -34,10 +34,6 @@ class IRCBot:
         while True:
             buffer = self.socket.recv(4096)
             lines = buffer.split(b'\n')
-
-            if self.send_allowed is False:
-                time.sleep(1)
-                self.send_allowed = True
 
             for data in lines:
                 data = str(data.decode('utf-8'))

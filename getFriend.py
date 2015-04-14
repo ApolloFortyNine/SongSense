@@ -12,6 +12,7 @@ import datetime
 
 class GetFriend():
     def __init__(self, name):
+        self.recs = []
         self.config = Config()
         self.engine = create_engine(self.config.engine_str)
         #self.engine = create_engine("sqlite:///test3.db")
@@ -24,6 +25,7 @@ class GetFriend():
         self.friend_id = self.get_friend_id()
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
+        self.get_rec()
         self.rec_url = self.get_rec_url()
 
     def get_friend_id(self):
@@ -125,10 +127,13 @@ class GetFriend():
         if not beatmaps_list:
             return 'FAILED'
         rand_int = random.randrange(0, 10)
+        self.recs = beatmaps_list
         return beatmaps_list[rand_int]
 
-    def get_rec_url(self):
-        beatmap_id = self.get_rec()
+    def get_rec_url(self, rec_num=None):
+        if rec_num is None:
+            rec_num = random.randrange(0, 10)
+        beatmap_id = self.recs[rec_num]
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
     def get_mods_str(self, mods_int):

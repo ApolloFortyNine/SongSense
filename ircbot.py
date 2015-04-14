@@ -17,6 +17,7 @@ class IRCBot:
 
     def say(self, msg, target):
         self.send("PRIVMSG %s :%s" % (target, msg))
+        time.sleep(1)
 
     def listen(self):
         self.socket.connect((self.server, self.port))
@@ -64,7 +65,7 @@ class IRCBot:
                 payload['type'] = args[1]
                 payload['target'] = args[2]
                 payload['msg'] = args[3][1:]
-
+                message = ""
                 if payload['type'] == 'PRIVMSG':
                     if payload['msg'].find('!') != -1:
                         message = ""
@@ -87,6 +88,7 @@ class IRCBot:
                                     friend = GetFriend(payload['sender'])
                                     message = "Recommendation " + str(x+1) + " Url: " + str(friend.get_rec_url(rec_num=x))
                                     break
+                    self.say(message, payload['sender'])
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

@@ -86,7 +86,9 @@ class GetFriend():
             for x in self.user_row.friends:
                 if x.matches > max_matches:
                     max_matches_id = x.user_id
+                    max_matches = x.matches
             self.top_friends = self.user_row.friends
+            self.matches = max_matches
             return max_matches_id
 
     def get_friend_name(self):

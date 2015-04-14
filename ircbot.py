@@ -11,6 +11,7 @@ class IRCBot:
         self.port = port
         self.channel = channel
         self.password = password
+        self.send_allowed = False
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
@@ -33,6 +34,10 @@ class IRCBot:
         while True:
             buffer = self.socket.recv(4096)
             lines = buffer.split(b'\n')
+
+            if self.send_allowed is False:
+                time.sleep(1)
+                self.send_allowed = True
 
             for data in lines:
                 data = str(data.decode('utf-8'))
@@ -65,12 +70,12 @@ class IRCBot:
                 payload['target'] = args[2]
                 payload['msg'] = args[3][1:]
 
-                if payload['type'] == 'PRIVMSG':
+                if payload['type'] == 'PRIVMSG' & self.send_allowed:
                     if payload['msg'] == '!r':
                         friend = GetFriend(payload['sender'])
                         self.say("Url: " + friend.get_rec_url(), payload['sender'])
                     elif payload['msg'] == '!h':
-                        self.say("Welcome to Osu Friend Finder! Type \"!r\" for a recommendation and \"!f\" to find your number one friend who shares beatmaps with you!", payload['sender'])
+                        self.say("Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who shares beatmaps with you and \"!r\" for a recommendation!", payload['sender'])
                     elif payload['msg'].find('!r') != -1:
                         for x in range(10):
                             if payload['msg'] == '!r ' + str(x+1):

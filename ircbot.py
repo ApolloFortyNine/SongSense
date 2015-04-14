@@ -67,24 +67,29 @@ class IRCBot:
                 payload['msg'] = args[3][1:]
 
                 if payload['type'] == 'PRIVMSG':
+                    message = ""
                     if payload['msg'] == '!r':
                         friend = GetFriend(payload['sender'])
-                        self.say("Url: " + friend.get_rec_url(), payload['sender'])
+                        message = "Url: " + friend.get_rec_url()
                     elif payload['msg'] == '!h':
-                        self.say("Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who shares beatmaps with you and \"!r\" for a recommendation!", payload['sender'])
+                        message = "Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who shares beatmaps with " \
+                                  "you and \"!r\" for a recommendation!"
                     elif payload['msg'] == '!f':
                         friend = GetFriend(payload['sender'])
-                        self.say("Your best friend: " + friend.friend_url, payload['sender'])
+                        message = "Your best friend: " + friend.friend_url
                     elif payload['msg'].find('!r') != -1:
-                        for x in len(friend.recs):
+                        friend = GetFriend(payload['sender'])
+                        for x in range(len(friend.recs)):
                             if payload['msg'] == '!r' + str(x+1):
                                 friend = GetFriend(payload['sender'])
-                                self.say("Recommendation " + str(x+1) + " Url: " + friend.get_rec_url(rec_num=x), payload['sender'])
+                                message = "Recommendation " + str(x+1) + " Url: " + friend.get_rec_url(rec_num=x)
                                 break
                             if x is len(friend.recs):
-                                self.say("I don't have any more recommendations /:")
+                                message = "I don't have any more recommendations /:"
                     elif payload['msg'].find('!') != -1:
-                        self.say(payload['msg'] + " Isn't recognized as a command, type !h for help.", payload['sender'])
+                        message = payload['msg'] + " Isn't recognized as a command, type !h for help."
+                    self.say(message, payload['sender'])
+                    self.say(message, self.nickname)
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

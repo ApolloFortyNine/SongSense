@@ -69,6 +69,7 @@ class IRCBot:
                 if payload['type'] == 'PRIVMSG':
                     if payload['msg'] == '!r':
                         friend = GetFriend(payload['sender'])
+                        print(friend.recs)
                         self.say("Url: " + friend.get_rec_url(), payload['sender'])
                     elif payload['msg'] == '!h':
                         self.say("Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who shares beatmaps with you and \"!r\" for a recommendation!", payload['sender'])

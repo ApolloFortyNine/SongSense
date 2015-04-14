@@ -127,14 +127,10 @@ class GetFriend():
             return 'FAILED'
         return beatmaps_list
 
-    def get_rec_url(self):
-        ran_num = random.randrange(0, 10)
-        beatmap_id = self.recs[ran_num]
+    def get_rec_url(self, rec_num=random.randrange(0, 10)):
+        beatmap_id = self.recs[rec_num]
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
-    def get_rec_url(self, rec_num):
-        beatmap_id = self.recs()[rec_num]
-        return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
 # friend_getter = GetFriend("HappyStick")
 # friend1 = friend_getter.friend_url

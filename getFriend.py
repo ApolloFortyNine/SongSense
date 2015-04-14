@@ -12,6 +12,7 @@ import datetime
 
 class GetFriend():
     def __init__(self, name):
+        self.recs = []
         self.config = Config()
         self.engine = create_engine(self.config.engine_str)
         #self.engine = create_engine("sqlite:///test3.db")
@@ -24,6 +25,7 @@ class GetFriend():
         self.friend_id = self.get_friend_id()
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
+        self.get_rec()
         self.rec_url = self.get_rec_url()
 
     def get_friend_id(self):
@@ -47,33 +49,55 @@ class GetFriend():
                     self.username = 'DoesNotExist'
                     self.friend_url = 'none'
                     return
+        return self.check_friends()
+
+    def check_friends(self):
         users_dict = {}
         number_of_maps = 0
-        for x in self.user_row.beatmaps:
-            # comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
-            #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
-            # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they don't need to be)
-            comparison = self.engine.execute("SELECT * FROM beatmaps WHERE beatmaps.enabled_mods=" +
-                                             str(x.enabled_mods) + " AND beatmaps.beatmap_id=" + str(x.beatmap_id))
-            number_of_maps += 1
-            for y in comparison:
-                if str(y.user_id) in users_dict:
-                    users_dict[str(y.user_id)] += 1
-                else:
-                    users_dict[str(y.user_id)] = 1
-        users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
-        self.matches = users_list[1][1]
-        self.top_friends = users_list[1:11]
-        friend_list = []
-        # Save friends in their own table, so we can skip searches on friends who are only a day or so old
-        for x in users_list[1:11]:
-            user = self.session.query(User).filter(User.user_id == int(x[0])).first()
-            friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id, username=user.username,
-                                      pp_rank=user.pp_rank, matches=x[1], last_updated=datetime.datetime.now())
-            friend_list.append(friend)
-        self.user_row.friends = friend_list
-        self.session.commit()
-        return users_list[1][0]
+        if self.update_friends_bool():
+            for x in self.user_row.beatmaps:
+                # comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
+                #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
+                # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they don't need to be)
+                comparison = self.engine.execute("SELECT * FROM beatmaps WHERE beatmaps.enabled_mods=" +
+                                                 str(x.enabled_mods) + " AND beatmaps.beatmap_id=" + str(x.beatmap_id))
+                number_of_maps += 1
+                for y in comparison:
+                    if str(y.user_id) in users_dict:
+                        users_dict[str(y.user_id)] += 1
+                    else:
+                        users_dict[str(y.user_id)] = 1
+            users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
+            self.matches = users_list[1][1]
+            self.top_friends = users_list[1:11]
+            friend_list = []
+            # Save friends in their own table, so we can skip searches on friends who are only a day or so old
+            for x in users_list[1:11]:
+                user = self.session.query(User).filter(User.user_id == int(x[0])).first()
+                friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id, username=user.username,
+                                pp_rank=user.pp_rank, matches=x[1], last_updated=datetime.datetime.now())
+                friend_list.append(friend)
+            self.user_row.friends = friend_list
+            self.session.commit()
+            return users_list[1][0]
+        else:
+            max_matches = 0
+            max_matches_id = ''
+            for x in self.user_row.friends:
+                if x.matches > max_matches:
+                    max_matches_id = x.user_id
+                    max_matches = x.matches
+            self.top_friends = self.user_row.friends
+            self.matches = max_matches
+            return max_matches_id
+
+    def update_friends_bool(self):
+        if self.user_row.friends == []:
+            return True
+        elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).days > 2:
+            return True
+        else:
+            return False
 
     def get_friend_name(self):
         try:
@@ -92,8 +116,11 @@ class GetFriend():
         user_beatmaps_dict = {}
         # Creates an array of User objects, each one containing the user's whole row
         for x in self.top_friends:
-            user_id = x[0]
-            matches = x[1]
+            if type(x) != Friend:
+                user_id = x[0]
+                matches = x[1]
+            else:
+                user_id = x.user_id
             top_friends_list.append(self.session.query(User).filter(User.user_id == user_id).first())
         # If the beatmap is already one of the user's top 50, regardless of mods don't tell them to play it again
         for x in self.user_row.beatmaps:
@@ -125,10 +152,13 @@ class GetFriend():
         if not beatmaps_list:
             return 'FAILED'
         rand_int = random.randrange(0, 10)
+        self.recs = beatmaps_list
         return beatmaps_list[rand_int]
 
-    def get_rec_url(self):
-        beatmap_id = self.get_rec()
+    def get_rec_url(self, rec_num=None):
+        if rec_num is None:
+            rec_num = random.randrange(0, 10)
+        beatmap_id = self.recs[rec_num]
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
     def get_mods_str(self, mods_int):

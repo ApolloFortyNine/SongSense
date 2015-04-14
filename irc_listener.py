@@ -7,3 +7,5 @@ name = config.irc_name
 port = config.irc_port
 channel = config.irc_channel
 password = config.irc_password
+ircbot = IRCBot(server, name, port, channel, password)
+ircbot.listen()

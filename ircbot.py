@@ -69,12 +69,16 @@ class IRCBot:
                     if payload['msg'] == '!r':
                         friend = GetFriend(payload['sender'])
                         self.say("Url: " + friend.get_rec_url(), payload['sender'])
-                    else:
+                    elif payload['msg'] == '!h':
+                        self.say("Welcome to Osu Friend Finder! Type \"!r\" for a recommendation and \"!f\" to find your number one friend who shares beatmaps with you!", payload['sender'])
+                    elif payload['msg'].find('!r') != -1:
                         for x in range(10):
                             if payload['msg'] == '!r ' + str(x+1):
                                 friend = GetFriend(payload['sender'])
                                 self.say("Reccomendation " + str(x+1) + " Url: " + friend.get_rec_url(rec_num=x), payload['sender'])
                                 break
+                    elif payload['msg'].find('!') != -1:
+                        self.say(payload['msg'] + " Isn't recognized as a command, type !h for help.", payload['sender'])
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

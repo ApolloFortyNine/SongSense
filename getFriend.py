@@ -111,7 +111,7 @@ class GetFriend():
                 if beatmap_enabled_mods_str in beatmaps_dict:
                     beatmaps_dict[beatmap_enabled_mods_str][0] += 1
                 else:
-                    beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id]
+                    beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id, self.get_mods_str(y.enabled_mods)]
         # Create a listed sorted by occurrence
         beatmaps_str_list = sorted(beatmaps_dict.items(), key=operator.itemgetter(1), reverse=True)
         beatmaps_list = []
@@ -130,6 +130,33 @@ class GetFriend():
     def get_rec_url(self):
         beatmap_id = self.get_rec()
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
+
+    def get_mods_str(self, mods_int):
+        mods = ""
+        if mods_int == 0:
+            return "NOMOD"
+        if (mods_int & 1) == 1:
+            mods = mods + "NF"
+        if (mods_int & 2) == 2:
+            mods = mods + "EZ"
+        if (mods_int & 8) == 8:
+            mods = mods + "HD"
+        if (mods_int & 16) == 16:
+            mods = mods + "HR"
+        if (mods_int & 32) == 32:
+            mods = mods + "SD"
+        if (mods_int & 64) == 64:
+            mods = mods + "DT"
+        if (mods_int & 256) == 256:
+            mods = mods + "HT"
+        if (mods_int & 512) == 512:
+            mods = mods + "NC"
+        if (mods_int & 1024) == 1024:
+            mods = mods + "FL"
+        if (mods_int & 4096) == 4096:
+            mods = mods + "SO"
+        return mods
+
 
 # friend_getter = GetFriend("HappyStick")
 # friend1 = friend_getter.friend_url

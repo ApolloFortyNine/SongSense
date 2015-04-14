@@ -54,7 +54,7 @@ class GetFriend():
     def check_friends(self):
         users_dict = {}
         number_of_maps = 0
-        if self.user_row.friends == []:
+        if (self.user_row.friends == []) | self.update_friends_bool():
             for x in self.user_row.beatmaps:
                 comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
                     filter(Beatmap.enabled_mods == x.enabled_mods).all()
@@ -90,6 +90,14 @@ class GetFriend():
             self.top_friends = self.user_row.friends
             self.matches = max_matches
             return max_matches_id
+
+    def update_friends_bool(self):
+        if self.user_row.friends == []:
+            return True
+        elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).days > 2:
+            return True
+        else:
+            return False
 
     def get_friend_name(self):
         try:

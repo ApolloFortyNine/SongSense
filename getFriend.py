@@ -25,7 +25,6 @@ class GetFriend():
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
         self.rec_url = self.get_rec_url()
-        self.mods = THEMODS
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -105,14 +104,14 @@ class GetFriend():
             comparison = self.session.query(Beatmap).filter(Beatmap.user_id == x.user_id).all()
             for y in comparison:
                 # Creates unique string with mods
-                beatmap_enabled_mods_str = (str(y.beatmap_id) + get_mods_str(y.enabled_mods))
+                beatmap_enabled_mods_str = (str(y.beatmap_id) + self.get_mods_str(y.enabled_mods))
                 # Skips beatmaps already in user's top 50
                 if str(y.beatmap_id) in user_beatmaps_dict:
                     continue
                 if beatmap_enabled_mods_str in beatmaps_dict:
                     beatmaps_dict[beatmap_enabled_mods_str][0] += 1
                 else:
-                    beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id]
+                    beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id, self.get_mods_str(y.enabled_mods)]
         # Create a listed sorted by occurrence
         beatmaps_str_list = sorted(beatmaps_dict.items(), key=operator.itemgetter(1), reverse=True)
         beatmaps_list = []
@@ -132,30 +131,30 @@ class GetFriend():
         beatmap_id = self.get_rec()
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
-    def get_mods_str(self,mods_int):
-        mods           = ""
+    def get_mods_str(self, mods_int):
+        mods = ""
         if mods_int == 0:
             return "NOMOD"
         if (mods_int & 1) == 1:
-            mods = Mods + "NF"
+            mods = mods + "NF"
         if (mods_int & 2) == 2:
-            mods = Mods + "EZ"
+            mods = mods + "EZ"
         if (mods_int & 8) == 8:
-            mods = Mods + "HD"
+            mods = mods + "HD"
         if (mods_int & 16) == 16:
-            mods = Mods + "HR"
+            mods = mods + "HR"
         if (mods_int & 32) == 32:
-            mods = Mods + "SD"
+            mods = mods + "SD"
         if (mods_int & 64) == 64:
-            mods = Mods + "DT"
+            mods = mods + "DT"
         if (mods_int & 256) == 256:
-            mods = Mods + "HT"
+            mods = mods + "HT"
         if (mods_int & 512) == 512:
-            mods = Mods + "NC"
+            mods = mods + "NC"
         if (mods_int & 1024) == 1024:
-            mods = Mods + "FL"
+            mods = mods + "FL"
         if (mods_int & 4096) == 4096:
-            mods = Mods + "SO"
+            mods = mods + "SO"
         return mods
 
 

@@ -1,6 +1,8 @@
 import socket
 import time
 from getFriend import GetFriend
+from osuApi import OsuApi
+from config import Config
 
 
 class IRCBot:
@@ -11,6 +13,7 @@ class IRCBot:
         self.port = port
         self.channel = channel
         self.password = password
+        self.osu = OsuApi(Config.osu_api_key)
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
@@ -85,7 +88,11 @@ class IRCBot:
                                     message = "I don't have any more recommendations :/"
                                     break
                                 if payload['msg'] == '!r' + str(x+1):
-                                    message = "Recommendation " + str(x+1) + " Url: " + str(friend.get_rec_url(rec_num=x))
+                                    url = str(friend.get_friend_url(rec_num=x))
+                                    #  [http://osu.ppy.sh/b/144320 Yousei Teikoku - Destrudo [Insane]]
+                                    beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
+                                    message = ("Recommendation " + str(x+1) + ": [" + url + " " + beatmap['artist'] +
+                                               " - " + beatmap['title'] + " " + beatmap['version'] + "]]")
                                     break
                     self.say(message, payload['sender'])
 

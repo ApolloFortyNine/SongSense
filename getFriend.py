@@ -24,7 +24,6 @@ class GetFriend():
         self.friend_id = self.get_friend_id()
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
-        self.rec_url = self.get_rec_url()
         self.recs = self.get_rec()
 
     def get_friend_id(self):

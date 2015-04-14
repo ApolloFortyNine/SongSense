@@ -84,6 +84,7 @@ class GetFriend():
             for x in self.user_row.friends:
                 if x.matches > max_matches:
                     max_matches_id = x.user_id
+            self.top_friends = self.user_row.friends
             return max_matches_id
 
     def get_friend_name(self):
@@ -103,8 +104,11 @@ class GetFriend():
         user_beatmaps_dict = {}
         # Creates an array of User objects, each one containing the user's whole row
         for x in self.top_friends:
-            user_id = x[0]
-            matches = x[1]
+            if type(x) != Friend:
+                user_id = x[0]
+                matches = x[1]
+            else:
+                user_id = x.user_id
             top_friends_list.append(self.session.query(User).filter(User.user_id == user_id).first())
         # If the beatmap is already one of the user's top 50, regardless of mods don't tell them to play it again
         for x in self.user_row.beatmaps:

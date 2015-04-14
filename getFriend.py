@@ -56,11 +56,11 @@ class GetFriend():
         number_of_maps = 0
         if self.update_friends_bool():
             for x in self.user_row.beatmaps:
-                comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
-                    filter(Beatmap.enabled_mods == x.enabled_mods).all()
+                # comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
+                #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
                 # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they don't need to be)
-                # comparison = self.engine.execute("SELECT * FROM beatmaps WHERE beatmaps.enabled_mods=" +
-                #                                  str(x.enabled_mods) + " AND beatmaps.beatmap_id=" + str(x.beatmap_id))
+                comparison = self.engine.execute("SELECT * FROM beatmaps WHERE beatmaps.enabled_mods=" +
+                                                 str(x.enabled_mods) + " AND beatmaps.beatmap_id=" + str(x.beatmap_id))
                 number_of_maps += 1
                 for y in comparison:
                     if str(y.user_id) in users_dict:

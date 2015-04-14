@@ -66,12 +66,15 @@ class IRCBot:
                 payload['target'] = args[2]
                 payload['msg'] = args[3][1:]
 
-                if payload['type'] == 'PRIVMSG' & self.send_allowed:
+                if payload['type'] == 'PRIVMSG':
                     if payload['msg'] == '!r':
                         friend = GetFriend(payload['sender'])
                         self.say("Url: " + friend.get_rec_url(), payload['sender'])
                     elif payload['msg'] == '!h':
                         self.say("Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who shares beatmaps with you and \"!r\" for a recommendation!", payload['sender'])
+                    elif payload['msg'] == '!f':
+                        friend = GetFriend(payload['sender'])
+                        self.say("Your best friend: " + friend.friend_url, payload['sender'])
                     elif payload['msg'].find('!r') != -1:
                         for x in range(10):
                             if payload['msg'] == '!r ' + str(x+1):

@@ -85,7 +85,6 @@ class IRCBot:
                                     message = "I don't have any more recommendations :/"
                                     break
                                 if payload['msg'] == '!r' + str(x+1):
-                                    friend = GetFriend(payload['sender'])
                                     message = "Recommendation " + str(x+1) + " Url: " + str(friend.get_rec_url(rec_num=x))
                                     break
                     self.say(message, payload['sender'])

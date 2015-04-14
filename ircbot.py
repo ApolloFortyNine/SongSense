@@ -13,7 +13,8 @@ class IRCBot:
         self.port = port
         self.channel = channel
         self.password = password
-        self.osu = OsuApi(Config.osu_api_key)
+        self.config = Config()
+        self.osu = OsuApi(self.config.osu_api_key)
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))

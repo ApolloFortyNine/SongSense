@@ -129,6 +129,32 @@ class GetFriend():
     def get_rec_url(self, rec_num=random.randrange(0, 10)):
         beatmap_id = self.recs[rec_num]
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
+    
+    def get_mods_str(self, mods_int):
+        mods = ""
+        if mods_int == 0:
+            return "NOMOD"
+        if (mods_int & 1) == 1:
+            mods = mods + "NF"
+        if (mods_int & 2) == 2:
+            mods = mods + "EZ"
+        if (mods_int & 8) == 8:
+            mods = mods + "HD"
+        if (mods_int & 16) == 16:
+            mods = mods + "HR"
+        if (mods_int & 32) == 32:
+            mods = mods + "SD"
+        if (mods_int & 64) == 64:
+            mods = mods + "DT"
+        if (mods_int & 256) == 256:
+            mods = mods + "HT"
+        if (mods_int & 512) == 512:
+            mods = mods + "NC"
+        if (mods_int & 1024) == 1024:
+            mods = mods + "FL"
+        if (mods_int & 4096) == 4096:
+            mods = mods + "SO"
+        return mods
 
 
 # friend_getter = GetFriend("HappyStick")

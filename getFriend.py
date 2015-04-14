@@ -25,6 +25,7 @@ class GetFriend():
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
         self.rec_url = self.get_rec_url()
+        self.mods = THEMODS
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -104,7 +105,7 @@ class GetFriend():
             comparison = self.session.query(Beatmap).filter(Beatmap.user_id == x.user_id).all()
             for y in comparison:
                 # Creates unique string with mods
-                beatmap_enabled_mods_str = (str(y.beatmap_id) + str(y.enabled_mods))
+                beatmap_enabled_mods_str = (str(y.beatmap_id) + get_mods_str(y.enabled_mods))
                 # Skips beatmaps already in user's top 50
                 if str(y.beatmap_id) in user_beatmaps_dict:
                     continue
@@ -130,6 +131,33 @@ class GetFriend():
     def get_rec_url(self):
         beatmap_id = self.get_rec()
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
+
+    def get_mods_str(self,mods_int):
+        mods           = ""
+        if mods_int == 0:
+            return "NOMOD"
+        if (mods_int & 1) == 1:
+            mods = Mods + "NF"
+        if (mods_int & 2) == 2:
+            mods = Mods + "EZ"
+        if (mods_int & 8) == 8:
+            mods = Mods + "HD"
+        if (mods_int & 16) == 16:
+            mods = Mods + "HR"
+        if (mods_int & 32) == 32:
+            mods = Mods + "SD"
+        if (mods_int & 64) == 64:
+            mods = Mods + "DT"
+        if (mods_int & 256) == 256:
+            mods = Mods + "HT"
+        if (mods_int & 512) == 512:
+            mods = Mods + "NC"
+        if (mods_int & 1024) == 1024:
+            mods = Mods + "FL"
+        if (mods_int & 4096) == 4096:
+            mods = Mods + "SO"
+        return mods
+
 
 # friend_getter = GetFriend("HappyStick")
 # friend1 = friend_getter.friend_url

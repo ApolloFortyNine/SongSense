@@ -25,6 +25,7 @@ class GetFriend():
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
         self.rec_url = self.get_rec_url()
+        self.recs = self.get_rec()
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -124,11 +125,15 @@ class GetFriend():
                 break
         if not beatmaps_list:
             return 'FAILED'
-        rand_int = random.randrange(0, 10)
-        return beatmaps_list[rand_int]
+        return beatmaps_list
 
     def get_rec_url(self):
-        beatmap_id = self.get_rec()
+        ran_num = random.randrange(0, 10)
+        beatmap_id = self.recs[ran_num]
+        return "https://osu.ppy.sh/b/" + str(beatmap_id)
+
+    def get_rec_url(self, rec_num):
+        beatmap_id = self.recs()[rec_num]
         return "https://osu.ppy.sh/b/" + str(beatmap_id)
 
 # friend_getter = GetFriend("HappyStick")

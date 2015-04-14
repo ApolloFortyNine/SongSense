@@ -72,9 +72,14 @@ class IRCBot:
                                  friend.friend_url, payload['sender'])
                         self.say("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
                                  friend.friend_url, self.nickname)
-                    if payload['msg'].find('!r') != -1:
+                    if payload['msg'] == '!r':
                         friend = GetFriend(payload['sender'])
-                        self.say("Url: " + friend.get_rec_url(), payload['sender'])
+                        self.say("Url: " + friend.get_rec_url(0), payload['sender'])
+                    for x in range(10):
+                        if payload['msg'] == '!r ' + str(x+1):
+                            friend = GetFriend(payload['sender'])
+                            self.say("Reccomendation " + str(x+1) + " Url: " + friend.get_rec_url(x), payload['sender'])
+                            break
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

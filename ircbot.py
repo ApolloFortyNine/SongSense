@@ -94,7 +94,7 @@ class IRCBot:
                                     beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
                                     beatmap = beatmap[0]
                                     message = ("Recommendation " + str(x+1) + ": [" + url + " " + beatmap['artist'] +
-                                               " - " + beatmap['title'] + " " + beatmap['version'] + "]]")
+                                               " - " + beatmap['title'] + " [" + beatmap['version'] + "]]")
                                     break
                     self.say(message, payload['sender'])
 

@@ -89,7 +89,7 @@ class IRCBot:
                                     message = "I don't have any more recommendations :/"
                                     break
                                 if payload['msg'] == '!r' + str(x+1):
-                                    url = str(friend.get_friend_url(rec_num=x))
+                                    url = str(friend.get_rec_url(rec_num=x))
                                     #  [http://osu.ppy.sh/b/144320 Yousei Teikoku - Destrudo [Insane]]
                                     beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
                                     message = ("Recommendation " + str(x+1) + ": [" + url + " " + beatmap['artist'] +

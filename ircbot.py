@@ -92,6 +92,7 @@ class IRCBot:
                                     url = str(friend.get_rec_url(rec_num=x))
                                     #  [http://osu.ppy.sh/b/144320 Yousei Teikoku - Destrudo [Insane]]
                                     beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
+                                    beatmap = beatmap[0]
                                     message = ("Recommendation " + str(x+1) + ": [" + url + " " + beatmap['artist'] +
                                                " - " + beatmap['title'] + " " + beatmap['version'] + "]]")
                                     break

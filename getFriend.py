@@ -54,7 +54,7 @@ class GetFriend():
     def check_friends(self):
         users_dict = {}
         number_of_maps = 0
-        if (self.user_row.friends == []) | self.update_friends_bool():
+        if self.update_friends_bool():
             for x in self.user_row.beatmaps:
                 comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
                     filter(Beatmap.enabled_mods == x.enabled_mods).all()

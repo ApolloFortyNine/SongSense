@@ -126,8 +126,8 @@ class GetFriend():
             return 'FAILED'
         return beatmaps_list
 
-    def get_rec_url(self, rec_num=0):
-        if rec_num is 0:
+    def get_rec_url(self, rec_num=None):
+        if rec_num is None:
             rec_num = random.randrange(0, 10)
         beatmap_id = self.recs[rec_num]
         return "https://osu.ppy.sh/b/" + str(beatmap_id)

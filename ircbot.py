@@ -76,11 +76,13 @@ class IRCBot:
                         friend = GetFriend(payload['sender'])
                         self.say("Your best friend: " + friend.friend_url, payload['sender'])
                     elif payload['msg'].find('!r') != -1:
-                        for x in range(10):
+                        for x in len(friend.recs):
                             if payload['msg'] == '!r' + str(x+1):
                                 friend = GetFriend(payload['sender'])
-                                self.say("Reccomendation " + str(x+1) + " Url: " + friend.get_rec_url(rec_num=x), payload['sender'])
+                                self.say("Recommendation " + str(x+1) + " Url: " + friend.get_rec_url(rec_num=x), payload['sender'])
                                 break
+                            if x is len(friend.recs):
+                                self.say("I don't have any more recommendations /:")
                     elif payload['msg'].find('!') != -1:
                         self.say(payload['msg'] + " Isn't recognized as a command, type !h for help.", payload['sender'])
 

@@ -12,6 +12,7 @@ import datetime
 
 class GetFriend():
     def __init__(self, name):
+        self.recs = []
         self.config = Config()
         self.engine = create_engine(self.config.engine_str)
         #self.engine = create_engine("sqlite:///test3.db")
@@ -25,7 +26,6 @@ class GetFriend():
         self.username = self.get_friend_name()
         self.friend_url = self.get_friend_url()
         self.rec_url = self.get_rec_url()
-        self.recs = []
 
     def get_friend_id(self):
         if self.user_row is None:

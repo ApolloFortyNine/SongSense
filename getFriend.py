@@ -112,7 +112,6 @@ class GetFriend():
                     beatmaps_dict[beatmap_enabled_mods_str][0] += 1
                 else:
                     beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id, self.get_mods_str(y.enabled_mods)]
-                    beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id]
         # Create a listed sorted by occurrence
         beatmaps_str_list = sorted(beatmaps_dict.items(), key=operator.itemgetter(1), reverse=True)
         beatmaps_list = []

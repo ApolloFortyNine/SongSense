@@ -97,6 +97,7 @@ class IRCBot:
                                     break
                     self.say(message, payload['sender'])
 
+    # It's important that get_rec_url() has been called on the friend object before calling.
     def get_map_str(self, friend):
         beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
         try:

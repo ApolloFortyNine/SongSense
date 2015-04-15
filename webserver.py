@@ -32,7 +32,7 @@ class StringGenerator(object):
         session = Session()
         for x in friend.top_friends:
             user = session.query(User).filter(User.user_id == x.user_id).first()
-            out_str += ("Name: " + user.username + " Matches: " + str(x.matches) + " Url: https://osu.ppy.sh/u/" + str(user.user_id) + "\n")
+            out_str += ("Name: " + user.username + " Matches: " + str(x.matches) + " Url: https://osu.ppy.sh/u/" + str(user.user_id) + ":: ")
         return out_str
 
     @cherrypy.expose

@@ -1,6 +1,8 @@
 from getFriend import GetFriend
 import cherrypy
-
+from sqlalchemy import *
+from sqlalchemy.orm import *
+from database import User, Friend, Beatmap
 
 class StringGenerator(object):
     @cherrypy.expose
@@ -22,8 +24,14 @@ class StringGenerator(object):
     @cherrypy.expose
     def get_friend(self, name="HappyStick"):
         friend = GetFriend(name)
-        return ("Name: " + friend.username + " Matches: " + str(friend.matches) + " Url: " +
-                friend.friend_url)
+        out_str = ''
+        engine = create_engine(self.config.engine_str)
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+        for x in friend.top_friends:
+            user = session.query(User).filter(User.user_id == x.user_id).first()
+            out_str += ("Name: " + user.username + " Matches: " + str(x.matches) + " Url: https://osu.ppy.sh/u/" + user.user_id + "\n")
+        return out_str
 
     @cherrypy.expose
     def get_rec(self, name="HappyStick"):

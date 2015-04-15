@@ -83,7 +83,8 @@ class IRCBot:
                                       "you and \"!r\" for a recommendation!"
                         elif payload['msg'] == '!f':
                             friend = GetFriend(payload['sender'])
-                            message = "Your best friend: " + str(friend.friend_url)
+                            message = ("Your best friend: " + str(friend.friend_url) + " with " + str(friend.matches) +
+                                       " matches")
                         elif payload['msg'].find('!r') != -1:
                             friend = GetFriend(payload['sender'])
                             for x in range(len(friend.recs)):

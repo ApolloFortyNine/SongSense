@@ -159,6 +159,8 @@ class GetFriend():
     def get_rec_url(self, rec_num=None):
         if rec_num is None:
             rec_num = random.randrange(0, 10)
+        if self.recs == []:
+            return "Username does not exist"
         self.beatmap_id = self.recs[rec_num][0]
         self.enabled_mods = self.recs[rec_num][1]
         self.rec_url = "https://osu.ppy.sh/b/" + str(self.beatmap_id)

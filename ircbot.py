@@ -94,7 +94,7 @@ class IRCBot:
                                     beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
                                     beatmap = beatmap[0]
                                     play_mods_str = ''
-                                    if friend.enabled_mods != "NOMODS":
+                                    if friend.enabled_mods != "NOMOD":
                                         play_mods_str = " Try " + friend.enabled_mods + "!"
                                     message = ("Recommendation " + str(x+1) + ": [" + url + " " + beatmap['artist'] +
                                                " - " + beatmap['title'] + " [" + beatmap['version'] + "]]" +

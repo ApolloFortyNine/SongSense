@@ -96,7 +96,7 @@ class GetFriend():
     def update_friends_bool(self):
         if self.user_row.friends == []:
             return True
-        elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).days > 2:
+        elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).days < 2:
             return True
         else:
             return False

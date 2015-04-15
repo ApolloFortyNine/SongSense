@@ -5,6 +5,7 @@ from sqlalchemy.orm import *
 from database import User, Friend, Beatmap
 from config import Config
 
+
 class StringGenerator(object):
     @cherrypy.expose
     def index(self):

@@ -3,6 +3,7 @@ import cherrypy
 from sqlalchemy import *
 from sqlalchemy.orm import *
 from database import User, Friend, Beatmap
+from config import Config
 
 class StringGenerator(object):
     @cherrypy.expose
@@ -25,8 +26,9 @@ class StringGenerator(object):
     def get_friend(self, name="HappyStick"):
         friend = GetFriend(name)
         out_str = ''
-        engine = create_engine(self.config.engine_str)
-        Session = sessionmaker(bind=self.engine)
+        config = Config()
+        engine = create_engine(config.engine_str)
+        Session = sessionmaker(bind=engine)
         session = Session()
         for x in friend.top_friends:
             user = session.query(User).filter(User.user_id == x.user_id).first()

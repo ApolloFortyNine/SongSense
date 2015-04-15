@@ -1,6 +1,8 @@
 import socket
 import time
 from getFriend import GetFriend
+from osuApi import OsuApi
+from config import Config
 
 
 class IRCBot:
@@ -11,6 +13,8 @@ class IRCBot:
         self.port = port
         self.channel = channel
         self.password = password
+        self.config = Config()
+        self.osu = OsuApi(self.config.osu_api_key)
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
@@ -71,7 +75,9 @@ class IRCBot:
                         message = ""
                         if payload['msg'] == '!r':
                             friend = GetFriend(payload['sender'])
-                            message = "Url: " + str(friend.get_rec_url())
+                            friend.get_rec_url()
+                            map_str = self.get_map_str(friend)
+                            message = "Random Recommendation: " + map_str
                         elif payload['msg'] == '!h':
                             message = "Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who shares beatmaps with " \
                                       "you and \"!r\" for a recommendation!"
@@ -85,9 +91,26 @@ class IRCBot:
                                     message = "I don't have any more recommendations :/"
                                     break
                                 if payload['msg'] == '!r' + str(x+1):
-                                    message = "Recommendation " + str(x+1) + " Url: " + str(friend.get_rec_url(rec_num=x))
+                                    friend.get_rec_url(rec_num=x)
+                                    map_str = self.get_map_str(friend)
+                                    message = ("Recommendation " + str(x+1) + ": " + map_str)
                                     break
                     self.say(message, payload['sender'])
+
+    # It's important that get_rec_url() has been called on the friend object before calling.
+    def get_map_str(self, friend):
+        beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
+        try:
+            beatmap = beatmap[0]
+        except IndexError:
+            return 'What the hell, that map doesn\'t exist!'
+
+        play_mods_str = ''
+        if friend.enabled_mods != "NOMOD":
+            play_mods_str = " Try " + friend.enabled_mods + "!"
+        map_str = ("[" + friend.rec_url + " " + beatmap['artist'] + " - " + beatmap['title'] + " [" +
+                   beatmap['version'] + "]]" + play_mods_str)
+        return map_str
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

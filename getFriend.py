@@ -13,6 +13,8 @@ import datetime
 class GetFriend():
     def __init__(self, name):
         self.recs = []
+        self.enabled_mods = ''
+        self.beatmap_id = 0
         self.config = Config()
         self.engine = create_engine(self.config.engine_str)
         #self.engine = create_engine("sqlite:///test3.db")
@@ -145,7 +147,7 @@ class GetFriend():
         map_rec_pool = 10
         # Create list of beatmap id's of size map_rec_pool
         for x in beatmaps_str_list:
-            beatmaps_list.append(x[1][1])
+            beatmaps_list.append([x[1][1], x[1][2]])
             map_rec_pool -= 1
             if map_rec_pool == 0:
                 break
@@ -158,8 +160,10 @@ class GetFriend():
     def get_rec_url(self, rec_num=None):
         if rec_num is None:
             rec_num = random.randrange(0, 10)
-        beatmap_id = self.recs[rec_num]
-        return "https://osu.ppy.sh/b/" + str(beatmap_id)
+        self.beatmap_id = self.recs[rec_num][0]
+        self.enabled_mods = self.recs[rec_num][1]
+        self.rec_url = "https://osu.ppy.sh/b/" + str(self.beatmap_id)
+        return "https://osu.ppy.sh/b/" + str(self.beatmap_id)
 
     def get_mods_str(self, mods_int):
         mods = ""

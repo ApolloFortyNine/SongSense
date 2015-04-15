@@ -14,16 +14,15 @@ channel = config.irc_channel
 password = config.irc_password
 ircbot = IRCBot(server, name, port, channel, password)
 names = ircbot.get_names()
-print(names[1])
 
 count = 0
 count_all = 0
 start = time.time()
 true_start = time.time()
 for name in names:
-    print(name)
     filled = filler.fill_data(name)
     if filled is not None:
+        print(name)
         count += 1
         count_all += 1
     time_passed = (time.time() - start)

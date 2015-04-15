@@ -89,18 +89,25 @@ class IRCBot:
                                     message = "I don't have any more recommendations :/"
                                     break
                                 if payload['msg'] == '!r' + str(x+1):
-                                    url = str(friend.get_rec_url(rec_num=x))
-                                    #  [http://osu.ppy.sh/b/144320 Yousei Teikoku - Destrudo [Insane]]
-                                    beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
-                                    beatmap = beatmap[0]
-                                    play_mods_str = ''
-                                    if friend.enabled_mods != "NOMOD":
-                                        play_mods_str = " Try " + friend.enabled_mods + "!"
-                                    message = ("Recommendation " + str(x+1) + ": [" + url + " " + beatmap['artist'] +
-                                               " - " + beatmap['title'] + " [" + beatmap['version'] + "]]" +
-                                               play_mods_str)
+                                    friend.get_rec_url(rec_num=x)
+                                    map_str = self.get_map_str(friend)
+                                    message = ("Recommendation " + str(x+1) + ": " + map_str)
                                     break
                     self.say(message, payload['sender'])
+
+    def get_map_str(self, friend):
+        beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
+        try:
+            beatmap = beatmap[0]
+        except IndexError:
+            return 'What the hell, that map doesn\'t exist!'
+
+        play_mods_str = ''
+        if friend.enabled_mods != "NOMOD":
+            play_mods_str = " Try " + friend.enabled_mods + "!"
+        map_str = ("[" + friend.rec_url + " " + beatmap['artist'] + " - " + beatmap['title'] + " [" +
+                   beatmap['version'] + "]]" + play_mods_str)
+        return map_str
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

@@ -162,6 +162,7 @@ class GetFriend():
             rec_num = random.randrange(0, 10)
         self.beatmap_id = self.recs[rec_num][0]
         self.enabled_mods = self.recs[rec_num][1]
+        self.rec_url = "https://osu.ppy.sh/b/" + str(self.beatmap_id)
         return "https://osu.ppy.sh/b/" + str(self.beatmap_id)
 
     def get_mods_str(self, mods_int):

@@ -43,7 +43,7 @@ class IRCBot:
                 data = str(data.decode('utf-8'))
                 if data == '':
                     continue
-                if data.find('sh QUIT :'):
+                if data.find('sh QUIT :') != -1:
                     continue
                 # This will handle when a line wasn't finished being received
                 print(data)

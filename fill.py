@@ -75,19 +75,3 @@ class Fill:
         self.session.close()
         return True
 
-#engine = create_engine("sqlite:///test3.db")
-#test = Fill("786b438aa07b502edd057387927406651b6b9698", engine)
-#test.fill_data("CAPSLOCKLOL")
-#time.sleep(5)
-#Session = sessionmaker(bind=engine)
-#session = Session()
-#x = session.query(User).filter((User.pp_rank < 1) | (User.pp_rank == None)).all()
-#for y in x:
-#    print(y.username)
-#session.delete(session.query(User).filter(User.username == "hvick225").first())
-#session.commit()
-#query = test.session.query(User).filter(User.user_id==1845677).order_by(User.id)
-#print(query.all()[2].beatmaps)
-#test.session.add(User(user_id=1845677))
-#test.fill_beatmaps('ApolloFortyNine')
-#Base.metadata.create_all(self.engine, checkfirst=True)

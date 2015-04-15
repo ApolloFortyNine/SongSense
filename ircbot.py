@@ -156,11 +156,3 @@ class IRCBot:
         raw_names = raw_names.replace("+", "")
         names_list = raw_names.split(" ")
         return names_list
-
-# server = "cho.ppy.sh"
-# name = "ApolloFortyNine"
-# port = 6667
-# channel = "OSU"
-# password = "784062"
-# ircbot = IRCBot(server, name, port, channel, password)
-# ircbot.listen()

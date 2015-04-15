@@ -17,7 +17,6 @@ class GetFriend():
         self.beatmap_id = 0
         self.config = Config()
         self.engine = create_engine(self.config.engine_str)
-        #self.engine = create_engine("sqlite:///test3.db")
         Session = sessionmaker(bind=self.engine)
         self.matches = 0
         self.top_friends = []
@@ -191,9 +190,3 @@ class GetFriend():
             mods = mods + "SO"
         return mods
 
-
-# friend_getter = GetFriend("HappyStick")
-# friend1 = friend_getter.friend_url
-# print(friend1)
-# print(friend_getter.get_rec())
-# print(friend_getter.username)

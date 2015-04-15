@@ -82,8 +82,3 @@ class OsuApi:
         obj = json.loads(content.decode('utf-8'))
         return obj
 
-#osu = OsuApi('786b438aa07b502edd057387927406651b6b9698')
-#test = osu.get_user_best(1845677, limit=50)
-#print(test)
-
-#print(osu.get_user('ApolloFortyNine', user_type='string')[0])

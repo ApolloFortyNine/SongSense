@@ -31,6 +31,7 @@ class StringGenerator(object):
         engine = create_engine(config.engine_str)
         Session = sessionmaker(bind=engine)
         session = Session()
+        friend = GetFriend(name)
         for x in friend.top_friends:
             user = session.query(User).filter(User.user_id == x.user_id).first()
             out_str += ("Name: " + user.username + " Matches: " + str(x.matches) + " Url: https://osu.ppy.sh/u/" +

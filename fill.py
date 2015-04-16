@@ -23,7 +23,7 @@ class Fill:
         # If last updated less than 3 days ago, don't update
         current_user = self.session.query(User).filter(User.username == osu_name).first()
         if current_user is not None:
-            if (datetime.datetime.now() - current_user.last_updated).days < 3:
+            if (datetime.datetime.now() - current_user.last_updated).days < 2:
                 return
         try:
             user_info = self.osu.get_user(osu_name)[0]

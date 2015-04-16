@@ -79,7 +79,7 @@ class IRCBot:
                             friend = GetFriend(payload['sender'])
                             friend.get_rec_url()
                             map_str = self.get_map_str(friend)
-                            message = "Random Recommendation: " + map_str + " for more recommendations type \"!rX\"" \
+                            message = "Random Recommendation: " + map_str + " For more recommendations type \"!rX\"" \
                                                                             " where X is a number 1-10"
                         elif payload['msg'] == '!h':
                             message = "Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who " \

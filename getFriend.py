@@ -168,6 +168,7 @@ class GetFriend():
 
     def get_mods_str(self, mods_int):
         mods = ""
+        print(mods_int)
         if mods_int == 0:
             return "NOMOD"
         if (mods_int & 1) == 1:

@@ -168,7 +168,6 @@ class GetFriend():
 
     def get_mods_str(self, mods_int):
         mods = ""
-        print(mods_int)
         if mods_int == 0:
             return "NOMOD"
         if (mods_int & 1) == 1:
@@ -191,5 +190,7 @@ class GetFriend():
             mods = mods + "FL"
         if (mods_int & 4096) == 4096:
             mods = mods + "SO"
+        if mods == "DTNC":
+            mods = "DT"
         return mods
 

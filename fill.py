@@ -52,6 +52,16 @@ class Fill:
 
         # Create an array of Beatmaps objects to insert into a User. Probably could be done better but it works
         for beatmap in beatmaps:
+            if 'enabled_mods' in beatmap:
+                # Removes nightcore mod
+                if (beatmap['enabled_mods'] & 512) == 512:
+                    beatmap['enabled_mods'] -= 512
+                # Removes suddendeath mod
+                if (beatmap['enabled_mods'] & 32) == 32:
+                    beatmap['enabled_mods'] -= 32
+                # Removes perfect mod
+                if (beatmap['enabled_mods'] & 16384) == 16384:
+                    beatmap['enabled_mods'] -= 16384
             arr.append(Beatmap(beatmap_id=beatmap['beatmap_id'], score=beatmap['score'], maxcombo=beatmap['maxcombo'],
                                 count300=beatmap['count300'], count100=beatmap['count100'], count50=beatmap['count50'],
                                 countmiss=beatmap['countmiss'], countkatu=beatmap['countkatu'],

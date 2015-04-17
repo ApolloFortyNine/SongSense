@@ -132,7 +132,7 @@ class GetFriend():
             comparison = self.session.query(Beatmap).filter(Beatmap.user_id == x.user_id).all()
             for y in comparison:
                 # Creates unique string with mods
-                beatmap_enabled_mods_str = (str(y.beatmap_id) + str(y.enabled_mods))
+                beatmap_enabled_mods_str = (str(y.beatmap_id) + self.get_mods_str(y.enabled_mods))
                 # Skips beatmaps already in user's top 50
                 if str(y.beatmap_id) in user_beatmaps_dict:
                     continue
@@ -184,8 +184,8 @@ class GetFriend():
             mods = mods + "DT"
         if (mods_int & 256) == 256:
             mods = mods + "HT"
-        if (mods_int & 512) == 512:
-            mods = mods + "NC"
+        #if (mods_int & 512) == 512:
+        #    mods = mods + "NC"
         if (mods_int & 1024) == 1024:
             mods = mods + "FL"
         if (mods_int & 4096) == 4096:

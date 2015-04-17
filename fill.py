@@ -54,6 +54,7 @@ class Fill:
         for beatmap in beatmaps:
             if 'enabled_mods' in beatmap:
                 # Removes nightcore mod
+                beatmap['enabled_mods'] = int(beatmap['enabled_mods'])
                 if (beatmap['enabled_mods'] & 512) == 512:
                     beatmap['enabled_mods'] -= 512
                 # Removes suddendeath mod

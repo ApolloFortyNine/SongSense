@@ -77,6 +77,7 @@ class GetFriend():
                                                  str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
                                                  str(x.enabled_mods))
                 logger.debug("After %d comparison", number_of_maps)
+                logger.debug("Current comparison: %d enabled_mods=%d", x.beatmap_id, x.enabled_mods)
                 number_of_maps += 1
                 for y in comparison:
                     if str(y.user_id) in users_dict:

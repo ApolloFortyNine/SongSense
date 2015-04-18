@@ -8,10 +8,14 @@ import random
 from fill import Fill
 from config import Config
 import datetime
+import logging
+
+logger = logging.getLogger('main')
 
 
 class GetFriend():
     def __init__(self, name):
+        logger.info('Top of GetFriend.__init__')
         self.recs = []
         self.enabled_mods = ''
         self.beatmap_id = 0
@@ -22,12 +26,19 @@ class GetFriend():
         self.top_friends = []
         self.session = Session()
         self.name = name
+        logger.info('Before get user_row')
         self.user_row = self.session.query(User).filter(User.username == self.name).first()
+        logger.info('After get user_row')
         self.friend_id = self.get_friend_id()
+        logger.info('After get friend_id')
         self.username = self.get_friend_name()
+        logger.info('After get friend_id')
         self.friend_url = self.get_friend_url()
+        logger.info('After get friend_url')
         self.get_rec()
+        logger.info('After get get_rec')
         self.rec_url = self.get_rec_url()
+        logger.info('After get rec_url')
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -55,22 +66,31 @@ class GetFriend():
     def check_friends(self):
         users_dict = {}
         number_of_maps = 0
+        logger.debug("update_friends_bool %s", str(self.update_friends_bool()))
         if self.update_friends_bool():
+            logger.debug("Before comparison queries")
             for x in self.user_row.beatmaps:
-                # comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
+                #comparison = self.session.query(Beatmap).options(load_only("user_id")).filter(Beatmap.beatmap_id == x.beatmap_id).\
                 #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
                 # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they don't need to be)
-                comparison = self.engine.execute("SELECT * FROM beatmaps WHERE beatmaps.enabled_mods=" +
-                                                 str(x.enabled_mods) + " AND beatmaps.beatmap_id=" + str(x.beatmap_id))
+                comparison = self.engine.execute("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
+                                                 str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
+                                                 str(x.enabled_mods))
+                logger.debug("After %d comparison", number_of_maps)
                 number_of_maps += 1
                 for y in comparison:
                     if str(y.user_id) in users_dict:
                         users_dict[str(y.user_id)] += 1
                     else:
                         users_dict[str(y.user_id)] = 1
+            logger.debug("After comparison queries")
             users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
-            self.matches = users_list[1][1]
-            self.top_friends = users_list[1:11]
+            try:
+                self.matches = users_list[1][1]
+                self.top_friends = users_list[1:11]
+            except IndexError:
+                self.matches = 0
+                self.top_friends = []
             friend_list = []
             # Save friends in their own table, so we can skip searches on friends who are only a day or so old
             for x in users_list[1:11]:

@@ -13,3 +13,4 @@ class Config():
         self.irc_port = 6667
         self.irc_channel = "OSU"
         self.irc_password = "password"
+        self.ip = 'IP ADDRESS'

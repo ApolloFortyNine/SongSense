@@ -4,6 +4,15 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from database import User, Friend, Beatmap
 from config import Config
+import logging
+import logging.handlers
+
+logger = logging.getLogger('main')
+handler = logging.handlers.RotatingFileHandler(filename='web.log', maxBytes=5000, backupCount=3)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 
 class StringGenerator(object):
@@ -45,5 +54,6 @@ class StringGenerator(object):
         return "Url: " + friend.get_rec_url()
 
 if __name__ == '__main__':
-    cherrypy.server.socket_host = '23.94.12.106'
+    config = Config()
+    cherrypy.server.socket_host = config.ip
     cherrypy.quickstart(StringGenerator())

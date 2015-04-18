@@ -73,12 +73,14 @@ class GetFriend():
                 comparison = self.engine.execute("SELECT * FROM beatmaps WHERE  beatmaps.beatmap_id=" +
                                                  str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
                                                  str(x.enabled_mods))
+                logging.info("After first comparison, size: %d", number_of_maps)
                 number_of_maps += 1
                 for y in comparison:
                     if str(y.user_id) in users_dict:
                         users_dict[str(y.user_id)] += 1
                     else:
                         users_dict[str(y.user_id)] = 1
+                logging.info("After dict loop")
             logging.info("After comparison queries")
             users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
             self.matches = users_list[1][1]

@@ -85,8 +85,12 @@ class GetFriend():
                         users_dict[str(y.user_id)] = 1
             logger.debug("After comparison queries")
             users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
-            self.matches = users_list[1][1]
-            self.top_friends = users_list[1:11]
+            try:
+                self.matches = users_list[1][1]
+                self.top_friends = users_list[1:11]
+            except IndexError:
+                self.matches = 0
+                self.top_friends = []
             friend_list = []
             # Save friends in their own table, so we can skip searches on friends who are only a day or so old
             for x in users_list[1:11]:

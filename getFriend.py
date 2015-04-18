@@ -167,7 +167,7 @@ class GetFriend():
         map_rec_pool = 20
         # Create list of beatmap id's of size map_rec_pool
         for x in beatmaps_str_list:
-            beatmaps_list.append([x[1][1], x[1][2]], x[1][3])
+            beatmaps_list.append([x[1][1], x[1][2]], x[1][0])
             map_rec_pool -= 1
             if map_rec_pool == 0:
                 break

@@ -1,9 +1,11 @@
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, defer
 
 Base = declarative_base()
-
+#
+# If ever creating new database, use BigInteger's for primary key's and set default values
+#
 
 class User(Base):
     __tablename__ = 'users'
@@ -34,6 +36,7 @@ class User(Base):
 class Beatmap(Base):
     __tablename__ = 'beatmaps'
 
+    # If anything ever goes wrong in the future, it's probably because this isn't BigInteger
     id = Column(Integer, primary_key=True)
     user_id = Column(BigInteger, ForeignKey('users.user_id'))
     beatmap_id = Column(Integer)
@@ -63,3 +66,27 @@ class Friend(Base):
     pp_rank = Column(Integer)
     matches = Column(Integer)
     last_updated = Column(DateTime)
+
+
+class BeatmapInfo(Base):
+    __tablename__ = 'beatmap_info'
+
+    beatmap_id = Column(Integer, primary_key=True)
+    artist = Column(String)
+    title = Column(String)
+    version = Column(String)
+    approved = Column(Integer)
+    approved_date = Column(DateTime)
+    last_update = Column(DateTime)
+    beatmapset_id = Column(Integer)
+    bpm = Column(Float)
+    creator = Column(String)
+    difficultyrating = Column(Float)
+    diff_size = Column(Float)
+    diff_overall = Column(Float)
+    diff_approach = Column(Float)
+    diff_drain = Column(Float)
+    hit_length = Column(Float)
+    source = Column(String)
+    total_length = Column(Float)
+    mode = Column(Integer)

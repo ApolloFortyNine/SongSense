@@ -1,13 +1,16 @@
 # Class to fill the database with user and beatmap info
 from config import Config
 from osuApi import OsuApi
-from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from database import Beatmap
 from database import User
 from database import Base
+from database import BeatmapInfo
 import time
 import datetime
+import logging
+
+logger = logging.getLogger('main')
 
 
 class Fill:
@@ -70,7 +73,14 @@ class Fill:
                                 enabled_mods=beatmap['enabled_mods'], user_id=beatmap['user_id'],
                                 date=datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S"),
                                 rank=beatmap['rank'], pp=beatmap['pp'], pp_rank=user_info['pp_rank']))
-
+            beatmap_info = self.session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id == beatmap['beatmap_id']).\
+                first()
+            if beatmap_info is None:
+                beatmaps_info = self.osu.get_beatmaps(map_id=beatmap['beatmap_id'])
+                for x in beatmaps_info:
+                    x['last_update'] = datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S")
+                    x['approved_date'] = datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S")
+                    self.session.add(BeatmapInfo(**x))
         # Using merge here allows it to both refresh user info and beatmap info. Also handles changed name, since
         # user_id is the primary key
         self.session.merge(User(user_id=user_info['user_id'], username=user_info['username'],

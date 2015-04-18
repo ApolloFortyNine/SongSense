@@ -164,7 +164,7 @@ class GetFriend():
         # Create a listed sorted by occurrence
         beatmaps_str_list = sorted(beatmaps_dict.items(), key=operator.itemgetter(1), reverse=True)
         beatmaps_list = []
-        map_rec_pool = 10
+        map_rec_pool = 20
         # Create list of beatmap id's of size map_rec_pool
         for x in beatmaps_str_list:
             beatmaps_list.append([x[1][1], x[1][2]])
@@ -173,6 +173,7 @@ class GetFriend():
                 break
         if not beatmaps_list:
             return 'FAILED'
+        logger.info(str(beatmaps_list))
         rand_int = random.randrange(0, 10)
         self.recs = beatmaps_list
         return beatmaps_list[rand_int]

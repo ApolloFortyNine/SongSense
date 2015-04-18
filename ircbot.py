@@ -84,7 +84,7 @@ class IRCBot:
                         elif payload['msg'] == '!h':
                             message = "Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who " \
                                       "shares beatmaps with you and \"!r\" for a recommendation! \"!rX\" where X is " \
-                                      "a number 1-10 also works."
+                                      "a number 1-20 also works."
                         elif payload['msg'] == '!f':
                             friend = GetFriend(payload['sender'])
                             message = ("Your best friend: " + str(friend.friend_url) + " with " + str(friend.matches) +

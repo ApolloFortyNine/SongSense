@@ -3,6 +3,7 @@ from database import User
 from database import Beatmap
 from database import Friend
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import load_only
 import operator
 import random
 from fill import Fill
@@ -67,10 +68,10 @@ class GetFriend():
         if self.update_friends_bool():
             logging.info("Before comparison queries")
             for x in self.user_row.beatmaps:
-                # comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\
+                #comparison = self.session.query(Beatmap).options(load_only("user_id")).filter(Beatmap.beatmap_id == x.beatmap_id).\
                 #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
                 # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they don't need to be)
-                comparison = self.engine.execute("SELECT * FROM beatmaps WHERE  beatmaps.beatmap_id=" +
+                comparison = self.engine.execute("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
                                                  str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
                                                  str(x.enabled_mods))
                 logging.info("After first comparison, size: %d", number_of_maps)

@@ -20,7 +20,7 @@ class GetFriend():
         self.enabled_mods = ''
         self.beatmap_id = 0
         self.config = Config()
-        self.engine = create_engine(self.config.engine_str)
+        self.engine = create_engine(self.config.engine_str, **self.config.engine_args)
         Session = sessionmaker(bind=self.engine)
         self.matches = 0
         self.top_friends = []

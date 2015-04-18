@@ -1,13 +1,16 @@
 # Class to fill the database with user and beatmap info
 from config import Config
 from osuApi import OsuApi
-from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from database import Beatmap
 from database import User
 from database import Base
+from database import BeatmapInfo
 import time
 import datetime
+import logging
+
+logger = logging.getLogger('main')
 
 
 class Fill:

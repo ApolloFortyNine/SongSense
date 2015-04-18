@@ -5,7 +5,7 @@ from sqlalchemy import *
 from config import Config
 
 config = Config()
-engine = create_engine(config.engine_str)
+engine = create_engine(config.engine_str, **config.engine_args)
 filler = Fill(engine)
 server = config.irc_server
 name = config.irc_name

@@ -4,6 +4,9 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from database import User, Friend, Beatmap
 from config import Config
+import logging
+logging.basicConfig(filename='webserver.log', level=logging.INFO, format='%(asctime)s %(message)s')
+logging.info('Started')
 
 
 class StringGenerator(object):

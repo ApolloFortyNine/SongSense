@@ -174,6 +174,7 @@ class GetFriend():
         if not beatmaps_list:
             return 'FAILED'
         logger.info(str(beatmaps_list))
+        # Leave as (0, 10) as first 10 are the best matches
         rand_int = random.randrange(0, 10)
         self.recs = beatmaps_list
         return beatmaps_list[rand_int]
@@ -193,25 +194,25 @@ class GetFriend():
         if mods_int == 0:
             return "NOMOD"
         if (mods_int & 1) == 1:
-            mods = mods + "NF"
+            mods += mods + "NF"
         if (mods_int & 2) == 2:
-            mods = mods + "EZ"
+            mods += mods + "EZ"
         if (mods_int & 8) == 8:
-            mods = mods + "HD"
+            mods += mods + "HD"
         if (mods_int & 16) == 16:
-            mods = mods + "HR"
+            mods += mods + "HR"
         if (mods_int & 32) == 32:
-            mods = mods + "SD"
+            mods += mods + "SD"
         if (mods_int & 64) == 64:
-            mods = mods + "DT"
+            mods += mods + "DT"
         if (mods_int & 256) == 256:
-            mods = mods + "HT"
+            mods += mods + "HT"
         #if (mods_int & 512) == 512:
         #    mods = mods + "NC"
         if (mods_int & 1024) == 1024:
-            mods = mods + "FL"
+            mods += mods + "FL"
         if (mods_int & 4096) == 4096:
-            mods = mods + "SO"
+            mods += mods + "SO"
         if mods == "DTNC":
             mods = "DT"
         return mods

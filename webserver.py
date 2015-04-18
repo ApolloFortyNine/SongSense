@@ -14,6 +14,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
+
 class StringGenerator(object):
     @cherrypy.expose
     def index(self):
@@ -53,5 +54,6 @@ class StringGenerator(object):
         return "Url: " + friend.get_rec_url()
 
 if __name__ == '__main__':
-    cherrypy.server.socket_host = '23.94.12.106'
+    config = Config()
+    cherrypy.server.socket_host = config.ip
     cherrypy.quickstart(StringGenerator())

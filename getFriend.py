@@ -3,13 +3,13 @@ from database import User
 from database import Beatmap
 from database import Friend
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import load_only
 import operator
 import random
 from fill import Fill
 from config import Config
 import datetime
 import logging
+
 
 class GetFriend():
     def __init__(self, name):
@@ -64,9 +64,9 @@ class GetFriend():
     def check_friends(self):
         users_dict = {}
         number_of_maps = 0
-        logging.info("%s", str(self.update_friends_bool()))
+        logging.debug("update_friends_bool %s", str(self.update_friends_bool()))
         if self.update_friends_bool():
-            logging.info("Before comparison queries")
+            logging.debug("Before comparison queries")
             for x in self.user_row.beatmaps:
                 #comparison = self.session.query(Beatmap).options(load_only("user_id")).filter(Beatmap.beatmap_id == x.beatmap_id).\
                 #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
@@ -74,14 +74,13 @@ class GetFriend():
                 comparison = self.engine.execute("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
                                                  str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
                                                  str(x.enabled_mods))
-                logging.info("After first comparison, size: %d", number_of_maps)
+                logging.debug("After %d comparison", number_of_maps)
                 number_of_maps += 1
                 for y in comparison:
                     if str(y.user_id) in users_dict:
                         users_dict[str(y.user_id)] += 1
                     else:
                         users_dict[str(y.user_id)] = 1
-                logging.info("After dict loop")
             logging.info("After comparison queries")
             users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
             self.matches = users_list[1][1]

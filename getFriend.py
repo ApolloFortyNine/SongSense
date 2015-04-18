@@ -15,7 +15,7 @@ logger = logging.getLogger('main')
 
 class GetFriend():
     def __init__(self, name):
-        logger.logging.info('Top of GetFriend.__init__')
+        logger.info('Top of GetFriend.__init__')
         self.recs = []
         self.enabled_mods = ''
         self.beatmap_id = 0
@@ -26,19 +26,19 @@ class GetFriend():
         self.top_friends = []
         self.session = Session()
         self.name = name
-        logger.logging.info('Before get user_row')
+        logger.info('Before get user_row')
         self.user_row = self.session.query(User).filter(User.username == self.name).first()
-        logger.logging.info('After get user_row')
+        logger.info('After get user_row')
         self.friend_id = self.get_friend_id()
-        logger.logging.info('After get friend_id')
+        logger.info('After get friend_id')
         self.username = self.get_friend_name()
-        logger.logging.info('After get friend_id')
+        logger.info('After get friend_id')
         self.friend_url = self.get_friend_url()
-        logger.logging.info('After get friend_url')
+        logger.info('After get friend_url')
         self.get_rec()
-        logger.logging.info('After get get_rec')
+        logger.info('After get get_rec')
         self.rec_url = self.get_rec_url()
-        logger.logging.info('After get rec_url')
+        logger.info('After get rec_url')
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -66,9 +66,9 @@ class GetFriend():
     def check_friends(self):
         users_dict = {}
         number_of_maps = 0
-        logger.logging.debug("update_friends_bool %s", str(self.update_friends_bool()))
+        logger.debug("update_friends_bool %s", str(self.update_friends_bool()))
         if self.update_friends_bool():
-            logger.logging.debug("Before comparison queries")
+            logger.debug("Before comparison queries")
             for x in self.user_row.beatmaps:
                 #comparison = self.session.query(Beatmap).options(load_only("user_id")).filter(Beatmap.beatmap_id == x.beatmap_id).\
                 #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
@@ -76,14 +76,14 @@ class GetFriend():
                 comparison = self.engine.execute("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
                                                  str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
                                                  str(x.enabled_mods))
-                logger.logging.debug("After %d comparison", number_of_maps)
+                logger.debug("After %d comparison", number_of_maps)
                 number_of_maps += 1
                 for y in comparison:
                     if str(y.user_id) in users_dict:
                         users_dict[str(y.user_id)] += 1
                     else:
                         users_dict[str(y.user_id)] = 1
-            logger.logging.info("After comparison queries")
+            logger.debug("After comparison queries")
             users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
             self.matches = users_list[1][1]
             self.top_friends = users_list[1:11]

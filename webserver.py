@@ -5,9 +5,14 @@ from sqlalchemy.orm import *
 from database import User, Friend, Beatmap
 from config import Config
 import logging
-logging.basicConfig(filename='webserver.log', level=logging.INFO, format='%(asctime)s %(message)s')
-logging.info('Started')
+import logging.handlers
 
+logger = logging.getLogger('main')
+handler = logging.handlers.RotatingFileHandler(filename='webserver.log', maxBytes=5000, backupCount=3)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 class StringGenerator(object):
     @cherrypy.expose

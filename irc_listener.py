@@ -1,8 +1,14 @@
 from ircbot import IRCBot
 from config import Config
 import logging
-logging.basicConfig(filename='osufriendfinder.log', level=logging.INFO, format='%(asctime)s %(message)s')
-logging.info('Started')
+import logging.handlers
+
+logger = logging.getLogger('main')
+handler = logging.handlers.RotatingFileHandler(filename='irc.log', maxBytes=5000, backupCount=3)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 config = Config()
 server = config.irc_server
 name = config.irc_name

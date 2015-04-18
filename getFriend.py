@@ -8,10 +8,11 @@ import random
 from fill import Fill
 from config import Config
 import datetime
-
+import logging
 
 class GetFriend():
     def __init__(self, name):
+        logging.info('Top of GetFriend.__init__')
         self.recs = []
         self.enabled_mods = ''
         self.beatmap_id = 0
@@ -22,12 +23,19 @@ class GetFriend():
         self.top_friends = []
         self.session = Session()
         self.name = name
+        logging.info('Before get user_row')
         self.user_row = self.session.query(User).filter(User.username == self.name).first()
+        logging.info('After get user_row')
         self.friend_id = self.get_friend_id()
+        logging.info('After get friend_id')
         self.username = self.get_friend_name()
+        logging.info('After get friend_id')
         self.friend_url = self.get_friend_url()
+        logging.info('After get friend_url')
         self.get_rec()
+        logging.info('After get get_rec')
         self.rec_url = self.get_rec_url()
+        logging.info('After get rec_url')
 
     def get_friend_id(self):
         if self.user_row is None:
@@ -55,6 +63,7 @@ class GetFriend():
     def check_friends(self):
         users_dict = {}
         number_of_maps = 0
+        logging.info("%s", str(self.update_friends_bool()))
         if self.update_friends_bool():
             for x in self.user_row.beatmaps:
                 # comparison = self.session.query(Beatmap).filter(Beatmap.beatmap_id == x.beatmap_id).\

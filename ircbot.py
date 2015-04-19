@@ -3,6 +3,10 @@ import time
 from getFriend import GetFriend
 from osuApi import OsuApi
 from config import Config
+from threading import Thread
+# Can't use process pool because GetFriend isn't pickleable, but it shouldn't be bound by cpu
+# (just SQL calls) so threads alone should be fine
+from concurrent.futures import ThreadPoolExecutor as Pool
 
 
 class IRCBot:
@@ -15,13 +19,13 @@ class IRCBot:
         self.password = password
         self.config = Config()
         self.osu = OsuApi(self.config.osu_api_key)
+        self.pool = Pool(8)
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
 
     def say(self, msg, target):
         self.send("PRIVMSG %s :%s" % (target, msg))
-        time.sleep(1)
 
     def listen(self):
         self.socket.connect((self.server, self.port))
@@ -30,10 +34,9 @@ class IRCBot:
         time.sleep(.05)
         self.send("NICK " + self.nickname + "\r\n")
         time.sleep(.05)
-        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" + self.nickname + "\r\n")
+        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" +
+                  self.nickname + "\r\n")
         time.sleep(.05)
-        raw_names = ""
-        begin_read_names = False
 
         while True:
             buffer = self.socket.recv(4096)
@@ -59,36 +62,15 @@ class IRCBot:
                 payload['type'] = args[1]
                 payload['target'] = args[2]
                 payload['msg'] = args[3][1:]
-                message = ""
+                # This should spawn a thread instead, possible in another function, while true
+                # adding the friend job to a concurrent_futures pool, waiting for a response.
+                # Thread(target=PAYLOAD_LOOP_FUNCTION, args=(payload), daemon = True)
+                # future = pool.submit(GetFriend, payload['sender'])
+                # friend = future.result()
                 if payload['type'] == 'PRIVMSG':
-                    if payload['msg'].find('!') != -1:
-                        message = ""
-                        if payload['msg'] == '!r':
-                            friend = GetFriend(payload['sender'])
-                            friend.get_rec_url()
-                            map_str = self.get_map_str(friend)
-                            message = "Random Recommendation: " + map_str + " For more recommendations type \"!rX\"" \
-                                                                            " where X is a number 1-20"
-                        elif payload['msg'] == '!h':
-                            message = "Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who " \
-                                      "shares beatmaps with you and \"!r\" for a recommendation! \"!rX\" where X is " \
-                                      "a number 1-20 also works."
-                        elif payload['msg'] == '!f':
-                            friend = GetFriend(payload['sender'])
-                            message = ("Your best friend: " + str(friend.friend_url) + " with " + str(friend.matches) +
-                                       " matches")
-                        elif payload['msg'].find('!r') != -1:
-                            friend = GetFriend(payload['sender'])
-                            for x in range(len(friend.recs)):
-                                if payload['msg'] == '!r' + str(x+1):
-                                    friend.get_rec_url(rec_num=x)
-                                    map_str = self.get_map_str(friend)
-                                    message = ("Recommendation " + str(x+1) + ": " + map_str)
-                                    break
-                            # If a break is not hit, this code is run.
-                            else:
-                                message = "I don't have any more recommendations :/"
-                    self.say(message, payload['sender'])
+                    t = Thread(target=self.respond, args=(payload,))
+                    t.daemon = True
+                    t.start()
 
     # It's important that get_rec_url() has been called on the friend object before calling.
     def get_map_str(self, friend):
@@ -101,9 +83,42 @@ class IRCBot:
         play_mods_str = ''
         if friend.enabled_mods != "NOMOD":
             play_mods_str = " Try " + friend.enabled_mods + "!"
-        map_str = ("[" + friend.rec_url + " " + beatmap['artist'] + " - " + beatmap['title'] + " [" +
-                   beatmap['version'] + "]]" + play_mods_str)
+        map_str = ("[" + friend.rec_url + " " + beatmap['artist'] + " - " + beatmap['title'] +
+                   " [" + beatmap['version'] + "]]" + play_mods_str)
         return map_str
+
+    def respond(self, payload):
+        message = ""
+        if payload['msg'].find('!') != -1:
+            if payload['msg'] == '!r':
+                future = self.pool.submit(GetFriend, payload['sender'])
+                friend = future.result()
+                friend.get_rec_url()
+                map_str = self.get_map_str(friend)
+                message = ("Random Recommendation: " + map_str +
+                           " For more recommendations type \"!rX\" where X is a number 1-20")
+            elif payload['msg'] == '!h':
+                message = ("Welcome to Osu Friend Finder! Type \"!f\" to find your number one"
+                           " friend who shares beatmaps with you and \"!r\" for a recommendation!"
+                           " \"!rX\" where X is a number 1-20 also works.")
+            elif payload['msg'] == '!f':
+                future = self.pool.submit(GetFriend, payload['sender'])
+                friend = future.result()
+                message = ("Your best friend: " + str(friend.friend_url) + " with " +
+                           str(friend.matches) + " matches")
+            elif payload['msg'].find('!r') != -1:
+                future = self.pool.submit(GetFriend, payload['sender'])
+                friend = future.result()
+                for x in range(len(friend.recs)):
+                    if payload['msg'] == '!r' + str(x+1):
+                        friend.get_rec_url(rec_num=x)
+                        map_str = self.get_map_str(friend)
+                        message = ("Recommendation " + str(x+1) + ": " + map_str)
+                        break
+                # If no break is hit.
+                else:
+                    message = "I don't have any more recommendations :/"
+        self.say(message, payload['sender'])
 
     def get_names(self):
         self.socket.connect((self.server, self.port))
@@ -112,7 +127,8 @@ class IRCBot:
         time.sleep(.05)
         self.send("NICK " + self.nickname + "\r\n")
         time.sleep(.05)
-        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" + self.nickname + "\r\n")
+        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" +
+                  self.nickname + "\r\n")
         time.sleep(.05)
         raw_names = ""
         start = time.time()
@@ -128,8 +144,9 @@ class IRCBot:
                 if data == '':
                     continue
                 # This will handle when a line wasn't finished being received
-                if (data.find(":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :") != -1) |\
-                        begin_read_names:
+                begin_str = (":" + self.server + " 353 " + self.nickname + " = " +
+                             self.channel + " :")
+                if (data.find(begin_str) != -1) | begin_read_names:
                     begin_read_names = True
                     if data.find("End of /NAMES list.") == -1:
                         raw_names += data
@@ -144,7 +161,8 @@ class IRCBot:
 
         time.sleep(.05)
         # Remove junk data
-        raw_names = raw_names.replace((":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :"), "")
+        replace_str = (":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :")
+        raw_names = raw_names.replace(replace_str, "")
         raw_names = raw_names.replace("@", "")
         raw_names = raw_names.replace("+", "")
         names_list = raw_names.split(" ")

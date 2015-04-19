@@ -45,19 +45,7 @@ class IRCBot:
                     continue
                 if data.find('sh QUIT :') != -1:
                     continue
-                # This will handle when a line wasn't finished being received
                 print(data)
-                # I got this error once...
-                try:
-                    if (data.find(":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :") != -1) |\
-                            begin_read_names:
-                        begin_read_names = True
-                        if data.find("End of /NAMES list.") == -1:
-                            raw_names += data
-                        else:
-                            begin_read_names = False
-                except UnicodeEncodeError:
-                    continue
                 if data.find('PING') != -1:
                     n = data.replace('PING ', '')
                     self.send('PONG :' + n)

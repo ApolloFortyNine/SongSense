@@ -92,14 +92,14 @@ class IRCBot:
                         elif payload['msg'].find('!r') != -1:
                             friend = GetFriend(payload['sender'])
                             for x in range(len(friend.recs)):
-                                if (x+2) > len(friend.recs):
-                                    message = "I don't have any more recommendations :/"
-                                    break
                                 if payload['msg'] == '!r' + str(x+1):
                                     friend.get_rec_url(rec_num=x)
                                     map_str = self.get_map_str(friend)
                                     message = ("Recommendation " + str(x+1) + ": " + map_str)
                                     break
+                            # If a break is not hit, this code is run.
+                            else:
+                                message = "I don't have any more recommendations :/"
                     self.say(message, payload['sender'])
 
     # It's important that get_rec_url() has been called on the friend object before calling.

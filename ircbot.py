@@ -65,7 +65,6 @@ class IRCBot:
 
                 if payload['type'] == 'PRIVMSG':
                     t = Thread(target=self.respond, args=(payload,))
-                    t.daemon = True
                     t.start()
 
     # It's important that get_rec_url() has been called on the friend object before calling.

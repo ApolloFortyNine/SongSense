@@ -25,8 +25,8 @@ class IRCBot:
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
 
     def say(self, msg, target):
-        self.send("PRIVMSG %s :%s" % (target, msg))
         time.sleep(1)
+        self.send("PRIVMSG %s :%s" % (target, msg))
 
     def listen(self):
         self.socket.connect((self.server, self.port))
@@ -35,10 +35,9 @@ class IRCBot:
         time.sleep(.05)
         self.send("NICK " + self.nickname + "\r\n")
         time.sleep(.05)
-        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" + self.nickname + "\r\n")
+        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" +
+                  self.nickname + "\r\n")
         time.sleep(.05)
-        raw_names = ""
-        begin_read_names = False
 
         while True:
             buffer = self.socket.recv(4096)
@@ -83,8 +82,8 @@ class IRCBot:
         play_mods_str = ''
         if friend.enabled_mods != "NOMOD":
             play_mods_str = " Try " + friend.enabled_mods + "!"
-        map_str = ("[" + friend.rec_url + " " + beatmap['artist'] + " - " + beatmap['title'] + " [" +
-                   beatmap['version'] + "]]" + play_mods_str)
+        map_str = ("[" + friend.rec_url + " " + beatmap['artist'] + " - " + beatmap['title'] +
+                   " [" + beatmap['version'] + "]]" + play_mods_str)
         return map_str
 
     def respond(self, payload):
@@ -95,17 +94,17 @@ class IRCBot:
                 friend = future.result()
                 friend.get_rec_url()
                 map_str = self.get_map_str(friend)
-                message = "Random Recommendation: " + map_str + " For more recommendations type \"!rX\"" \
-                                                                " where X is a number 1-20"
+                message = ("Random Recommendation: " + map_str +
+                           " For more recommendations type \"!rX\" where X is a number 1-20")
             elif payload['msg'] == '!h':
-                message = "Welcome to Osu Friend Finder! Type \"!f\" to find your number one friend who " \
-                          "shares beatmaps with you and \"!r\" for a recommendation! \"!rX\" where X is " \
-                          "a number 1-20 also works."
+                message = ("Welcome to Osu Friend Finder! Type \"!f\" to find your number one"
+                           " friend who shares beatmaps with you and \"!r\" for a recommendation!"
+                           " \"!rX\" where X is a number 1-20 also works.")
             elif payload['msg'] == '!f':
                 future = self.pool.submit(GetFriend, payload['sender'])
                 friend = future.result()
-                message = ("Your best friend: " + str(friend.friend_url) + " with " + str(friend.matches) +
-                           " matches")
+                message = ("Your best friend: " + str(friend.friend_url) + " with " +
+                           str(friend.matches) + " matches")
             elif payload['msg'].find('!r') != -1:
                 future = self.pool.submit(GetFriend, payload['sender'])
                 friend = future.result()
@@ -127,7 +126,8 @@ class IRCBot:
         time.sleep(.05)
         self.send("NICK " + self.nickname + "\r\n")
         time.sleep(.05)
-        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" + self.nickname + "\r\n")
+        self.send("USER " + self.nickname + " " + self.nickname + " " + self.nickname + " :" +
+                  self.nickname + "\r\n")
         time.sleep(.05)
         raw_names = ""
         start = time.time()
@@ -143,8 +143,9 @@ class IRCBot:
                 if data == '':
                     continue
                 # This will handle when a line wasn't finished being received
-                if (data.find(":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :") != -1) |\
-                        begin_read_names:
+                begin_str = (":" + self.server + " 353 " + self.nickname + " = " +
+                             self.channel + " :")
+                if (data.find(begin_str) != -1) | begin_read_names:
                     begin_read_names = True
                     if data.find("End of /NAMES list.") == -1:
                         raw_names += data
@@ -159,7 +160,8 @@ class IRCBot:
 
         time.sleep(.05)
         # Remove junk data
-        raw_names = raw_names.replace((":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :"), "")
+        replace_str = (":" + self.server + " 353 " + self.nickname + " = " + self.channel + " :")
+        raw_names = raw_names.replace(replace_str, "")
         raw_names = raw_names.replace("@", "")
         raw_names = raw_names.replace("+", "")
         names_list = raw_names.split(" ")

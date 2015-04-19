@@ -62,11 +62,7 @@ class IRCBot:
                 payload['type'] = args[1]
                 payload['target'] = args[2]
                 payload['msg'] = args[3][1:]
-                # This should spawn a thread instead, possible in another function, while true
-                # adding the friend job to a concurrent_futures pool, waiting for a response.
-                # Thread(target=PAYLOAD_LOOP_FUNCTION, args=(payload), daemon = True)
-                # future = pool.submit(GetFriend, payload['sender'])
-                # friend = future.result()
+
                 if payload['type'] == 'PRIVMSG':
                     t = Thread(target=self.respond, args=(payload,))
                     t.daemon = True

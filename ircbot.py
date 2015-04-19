@@ -25,7 +25,6 @@ class IRCBot:
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
 
     def say(self, msg, target):
-        time.sleep(1)
         self.send("PRIVMSG %s :%s" % (target, msg))
 
     def listen(self):
@@ -69,7 +68,9 @@ class IRCBot:
                 # future = pool.submit(GetFriend, payload['sender'])
                 # friend = future.result()
                 if payload['type'] == 'PRIVMSG':
-                    Thread(target=self.respond, args=(payload,), daemon=True).start()
+                    t = Thread(target=self.respond, args=(payload,))
+                    t.daemon = True
+                    t.start()
 
     # It's important that get_rec_url() has been called on the friend object before calling.
     def get_map_str(self, friend):

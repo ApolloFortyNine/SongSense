@@ -45,8 +45,8 @@ class GetFriend():
             filler = Fill(self.engine)
             filler.fill_data(self.name)
             self.user_row = self.session.query(User).filter(User.username == self.name).first()
-            # Since _ in IRC can be spaces in OSU names, if can't find a user with '_', replace them with ' ' and try
-            # again. If still can't find the user, give up.
+            # Since _ in IRC can be spaces in OSU names, if can't find a user with '_', replace
+            # them with ' ' and try again. If still can't find the user, give up.
             # Possibly raise an error here (ValueError).
             if (self.user_row is None) & (self.name.find('_') == -1):
                 self.friend_id = 123456
@@ -70,12 +70,15 @@ class GetFriend():
         if self.update_friends_bool():
             logger.debug("Before comparison queries")
             for x in self.user_row.beatmaps:
-                #comparison = self.session.query(Beatmap).options(load_only("user_id")).filter(Beatmap.beatmap_id == x.beatmap_id).\
-                #    filter(Beatmap.enabled_mods == x.enabled_mods).all()
-                # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they don't need to be)
-                comparison = self.engine.execute("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
-                                                 str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
-                                                 str(x.enabled_mods))
+                # comparison = self.session.query(Beatmap).options(load_only("user_id")).\
+                # filter(Beatmap.beatmap_id == x.beatmap_id).\
+                # filter(Beatmap.enabled_mods == x.enabled_mods).all()
+                # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they
+                # don't need to be)
+                query_str = ("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
+                             str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
+                             str(x.enabled_mods))
+                comparison = self.engine.execute(query_str)
                 logger.debug("After %d comparison", number_of_maps)
                 logger.debug("Current comparison: %d enabled_mods=%d", x.beatmap_id, x.enabled_mods)
                 number_of_maps += 1
@@ -93,11 +96,13 @@ class GetFriend():
                 self.matches = 0
                 self.top_friends = []
             friend_list = []
-            # Save friends in their own table, so we can skip searches on friends who are only a day or so old
+            # Save friends in their own table, so we can skip searches on friends who are only
+            # a day or so old
             for x in users_list[1:11]:
                 user = self.session.query(User).filter(User.user_id == int(x[0])).first()
-                friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id, username=user.username,
-                                pp_rank=user.pp_rank, matches=x[1], last_updated=datetime.datetime.now())
+                friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id,
+                                username=user.username, pp_rank=user.pp_rank, matches=x[1],
+                                last_updated=datetime.datetime.now())
                 friend_list.append(friend)
             self.user_row.friends = friend_list
             self.session.commit()
@@ -123,7 +128,8 @@ class GetFriend():
 
     def get_friend_name(self):
         try:
-            username = self.session.query(User).filter(User.user_id == self.friend_id).first().username
+            username = self.session.query(User).filter(User.user_id ==
+                                                       self.friend_id).first().username
         except AttributeError:
             username = 'DoesNotExist'
         return username
@@ -143,8 +149,10 @@ class GetFriend():
                 matches = x[1]
             else:
                 user_id = x.user_id
-            top_friends_list.append(self.session.query(User).filter(User.user_id == user_id).first())
-        # If the beatmap is already one of the user's top 50, regardless of mods don't tell them to play it again
+            top_friends_list.append(self.session.query(User).filter(User.user_id ==
+                                                                    user_id).first())
+        # If the beatmap is already one of the user's top 50, regardless of mods don't tell
+        # them to play it again
         for x in self.user_row.beatmaps:
             user_beatmaps_dict[str(x.beatmap_id)] = 1
         beatmaps_dict = {}
@@ -160,7 +168,8 @@ class GetFriend():
                 if beatmap_enabled_mods_str in beatmaps_dict:
                     beatmaps_dict[beatmap_enabled_mods_str][0] += 1
                 else:
-                    beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id, self.get_mods_str(y.enabled_mods)]
+                    beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id,
+                                                               self.get_mods_str(y.enabled_mods)]
         # Create a listed sorted by occurrence
         beatmaps_str_list = sorted(beatmaps_dict.items(), key=operator.itemgetter(1), reverse=True)
         beatmaps_list = []
@@ -207,7 +216,7 @@ class GetFriend():
             mods += mods + "DT"
         if (mods_int & 256) == 256:
             mods += mods + "HT"
-        #if (mods_int & 512) == 512:
+        # if (mods_int & 512) == 512:
         #    mods = mods + "NC"
         if (mods_int & 1024) == 1024:
             mods += mods + "FL"

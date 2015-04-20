@@ -6,9 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, defer
 
 Base = declarative_base()
-#
-# If ever creating new database, use BigInteger's for primary key's and set default values
-#
 
 
 class User(Base):
@@ -40,8 +37,7 @@ class User(Base):
 class Beatmap(Base):
     __tablename__ = 'beatmaps'
 
-    # If anything ever goes wrong in the future, it's probably because this isn't BigInteger
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     user_id = Column(BigInteger, ForeignKey('users.user_id'))
     beatmap_id = Column(Integer)
     score = Column(Integer)

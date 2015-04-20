@@ -1,3 +1,6 @@
+"""
+This script will scrape the online users using an ircbot instance.
+"""
 from ircbot import IRCBot
 import time
 from fill import Fill

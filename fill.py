@@ -1,4 +1,6 @@
-# Class to fill the database with user and beatmap info
+"""
+Class to fill the database with user and beatmap info.
+"""
 from config import Config
 from osuApi import OsuApi
 from sqlalchemy.orm import sessionmaker

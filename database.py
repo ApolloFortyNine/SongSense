@@ -1,3 +1,6 @@
+"""
+These classes are responsible for representing the tables used in the SQL database.
+"""
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, defer
@@ -6,6 +9,7 @@ Base = declarative_base()
 #
 # If ever creating new database, use BigInteger's for primary key's and set default values
 #
+
 
 class User(Base):
     __tablename__ = 'users'

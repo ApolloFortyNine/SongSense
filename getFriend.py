@@ -1,3 +1,7 @@
+"""
+GetFriend creates an object that contains a user's top 10 friends and can create there top 20
+recommendations. It's probably easiest to understand if you see how it's used in ircbot.py
+"""
 from sqlalchemy import *
 from database import User
 from database import Beatmap

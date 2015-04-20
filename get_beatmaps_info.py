@@ -1,3 +1,7 @@
+"""
+This script checks to see if any beatmaps have yet to be inserted into the database,
+then adds them
+"""
 from sqlalchemy.orm import sessionmaker, load_only
 from sqlalchemy import *
 from config import Config

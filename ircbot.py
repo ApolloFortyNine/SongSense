@@ -1,3 +1,6 @@
+"""
+IRCBot is used to listen for requests, as well as to scrape online users.
+"""
 import socket
 import time
 from getFriend import GetFriend

@@ -1,3 +1,7 @@
+"""
+This is an extremely rudimentary webserver. It works, and that's about all that can be said
+about it
+"""
 from getFriend import GetFriend
 import cherrypy
 from sqlalchemy import *
@@ -40,12 +44,13 @@ class StringGenerator(object):
         engine = create_engine(config.engine_str)
         Session = sessionmaker(bind=engine)
         session = Session()
-        # This has to be called once after the first time. I should probably figure out why at some point.
+        # This has to be called once after the first time. I should probably figure out
+        # why at some point.
         friend = GetFriend(name)
         for x in friend.top_friends:
             user = session.query(User).filter(User.user_id == x.user_id).first()
-            out_str += ("Name: " + user.username + " Matches: " + str(x.matches) + " Url: https://osu.ppy.sh/u/" +
-                        str(user.user_id) + " :: ")
+            out_str += ("Name: " + user.username + " Matches: " + str(x.matches) +
+                        " Url: https://osu.ppy.sh/u/" + str(user.user_id) + " :: ")
         return out_str
 
     @cherrypy.expose

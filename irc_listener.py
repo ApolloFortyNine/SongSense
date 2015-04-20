@@ -1,3 +1,6 @@
+"""
+This script initiates an irc listening service.
+"""
 from ircbot import IRCBot
 from config import Config
 import logging

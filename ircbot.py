@@ -9,7 +9,8 @@ from config import Config
 from threading import Thread
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import *
-from database import BeatmapInfo
+from database import *
+from fill import Fill
 import datetime
 # Can't use process pool because GetFriend isn't pickleable, but it shouldn't be bound by cpu
 # (just SQL calls) so threads alone should be fine
@@ -125,6 +126,16 @@ class IRCBot:
                 friend = future.result()
                 message = ("Your best friend: " + str(friend.friend_url) + " with " +
                            str(friend.matches) + " matches")
+            elif payload['msg'] == '!update':
+                filler = Fill(self.engine, force=True)
+                future = self.pool.submit(filler.fill_data, payload['sender'])
+                future.result()
+                session = self.Session()
+                user = session.query(User).filter(User.username == payload['sender']).first()
+                user.friends = []
+                session.commit()
+                session.close()
+                message = "Updated successfully!"
             elif payload['msg'].find('!r') != -1:
                 future = self.pool.submit(GetFriend, payload['sender'])
                 friend = future.result()

@@ -7,7 +7,7 @@ from getFriend import GetFriend
 from osuApi import OsuApi
 from config import Config
 from threading import Thread
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import *
 from database import BeatmapInfo
 import datetime
@@ -28,8 +28,7 @@ class IRCBot:
         self.osu = OsuApi(self.config.osu_api_key)
         self.pool = Pool(8)
         self.engine = create_engine(self.config.engine_str, **self.config.engine_args)
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        self.Session = scoped_session(sessionmaker(bind=self.engine))
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
@@ -78,9 +77,11 @@ class IRCBot:
                     t.start()
 
     # It's important that get_rec_url() has been called on the friend object before calling.
+    # Session's aren't thread safe, so create a new one whenever it's used
     def get_map_str(self, friend):
-        beatmap = self.session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id ==
-                                                         friend.beatmap_id).first()
+        session = self.Session()
+        beatmap = session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id ==
+                                                    friend.beatmap_id).first()
         if not beatmap:
             beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
             try:
@@ -92,16 +93,17 @@ class IRCBot:
             if beatmap['approved_date'] is not None:
                 beatmap['approved_date'] = datetime.datetime.strptime(beatmap['approved_date'],
                                                                       "%Y-%m-%d %H:%M:%S")
-            self.session.add(BeatmapInfo(**beatmap))
-            beatmap = self.session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id ==
-                                                             friend.beatmap_id).first()
+            session.add(BeatmapInfo(**beatmap))
+            beatmap = session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id ==
+                                                        friend.beatmap_id).first()
 
         play_mods_str = ''
         if friend.enabled_mods != "NOMOD":
             play_mods_str = " Try " + friend.enabled_mods + "!"
         map_str = ("[" + friend.rec_url + " " + beatmap.artist + " - " + beatmap.title +
                    " [" + beatmap.version + "]]" + play_mods_str)
-        self.session.commit()
+        session.commit()
+        session.close()
         return map_str
 
     def respond(self, payload):

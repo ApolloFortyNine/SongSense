@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 
 logger = logging.getLogger('main')
-handler = logging.handlers.RotatingFileHandler(filename='irc.log', maxBytes=500000, backupCount=3)
+handler = logging.handlers.RotatingFileHandler(filename='irc.log', maxBytes=5000000, backupCount=3)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)

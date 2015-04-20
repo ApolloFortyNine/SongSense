@@ -32,7 +32,7 @@ class GetFriend():
         self.friend_id = self.get_friend_id()
         logger.info('After get friend_id')
         self.username = self.get_friend_name()
-        logger.info('After get friend_id')
+        logger.info('After get friend_name')
         self.friend_url = self.get_friend_url()
         logger.info('After get friend_url')
         self.get_rec()

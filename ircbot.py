@@ -8,7 +8,6 @@ from osuApi import OsuApi
 from config import Config
 from threading import Thread
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import *
 from database import *
 from fill import Fill
 import datetime

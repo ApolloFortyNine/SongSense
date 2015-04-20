@@ -11,6 +11,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from database import *
 from fill import Fill
 import datetime
+import random
 # Can't use process pool because GetFriend isn't pickleable, but it shouldn't be bound by cpu
 # (just SQL calls) so threads alone should be fine
 from concurrent.futures import ThreadPoolExecutor as Pool
@@ -135,6 +136,35 @@ class IRCBot:
                 session.commit()
                 session.close()
                 message = "Updated successfully!"
+            elif payload['msg'].find(' length=') != -1:
+                future = self.pool.submit(GetFriend, payload['sender'])
+                friend = future.result()
+                msg_params = payload['msg'].split(" ")
+                try:
+                    length_raw = float(msg_params[1][7:])
+                except ValueError:
+                    message = ("Format is '!r length=X', where X is minutes."
+                               " Such as 1.5 for 1:30.")
+                    if payload['sender'] == self.nickname:
+                        return
+                    self.say(message, payload['sender'])
+                    return
+                length = length_raw * 60
+                session = self.Session()
+                random_recs = random.sample(friend.recs, len(friend.recs))
+                friend.recs = random_recs
+                for x in range(len(friend.recs)):
+                    friend.get_rec_url(rec_num=x)
+                    beatmap_info = session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id ==
+                                                                     friend.beatmap_id).first()
+                    if beatmap_info.total_length < length:
+                        map_str = self.get_map_str(friend)
+                        message = ("Recommendation less than " + str(length_raw) + " minutes" +
+                                   ": " + map_str)
+                        break
+                else:
+                    message = ("Sorry, none of the found recommendations are less than " +
+                               str(length_raw) + " minutes.")
             elif payload['msg'].find('!r') != -1:
                 future = self.pool.submit(GetFriend, payload['sender'])
                 friend = future.result()
@@ -146,6 +176,8 @@ class IRCBot:
                         break
                 # If no break is hit.
                 else:
+                    if payload['sender'] == self.nickname:
+                        return
                     message = "I don't have any more recommendations :/"
         self.say(message, payload['sender'])
 

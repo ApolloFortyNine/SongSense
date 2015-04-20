@@ -16,8 +16,9 @@ logger = logging.getLogger('main')
 
 
 class Fill:
-    def __init__(self, engine):
+    def __init__(self, engine, force=False):
         self.config = Config()
+        self.force = force
         self.osu = OsuApi(self.config.osu_api_key)
         self.engine = engine
         self.Session = sessionmaker(bind=self.engine)
@@ -28,7 +29,7 @@ class Fill:
         # If last updated less than 3 days ago, don't update
         current_user = self.session.query(User).filter(User.username == osu_name).first()
         if current_user is not None:
-            if (datetime.datetime.now() - current_user.last_updated).days < 2:
+            if ((datetime.datetime.now() - current_user.last_updated).days < 2) & (not self.force):
                 return
         try:
             user_info = self.osu.get_user(osu_name)[0]

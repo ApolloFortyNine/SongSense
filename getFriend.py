@@ -59,8 +59,8 @@ class GetFriend():
                 return
             elif self.user_row is None:
                 self.name = self.name.replace('_', ' ')
-                user_test = self.session.query(User).filter(User.username == self.name).first()
-                if user_test is None:
+                self.user_row = self.session.query(User).filter(User.username == self.name).first()
+                if self.user_row is None:
                     self.friend_id = 123456
                     self.username = 'DoesNotExist'
                     self.friend_url = 'none'
@@ -123,7 +123,7 @@ class GetFriend():
             return max_matches_id
 
     def update_friends_bool(self):
-        if self.user_row.friends == []:
+        if not self.user_row.friends:
             return True
         elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).days > 2:
             return True
@@ -150,7 +150,6 @@ class GetFriend():
         for x in self.top_friends:
             if type(x) != Friend:
                 user_id = x[0]
-                matches = x[1]
             else:
                 user_id = x.user_id
             top_friends_list.append(self.session.query(User).filter(User.user_id ==
@@ -195,7 +194,7 @@ class GetFriend():
     def get_rec_url(self, rec_num=None):
         if rec_num is None:
             rec_num = random.randrange(0, 10)
-        if self.recs == []:
+        if not self.recs:
             return "Username does not exist"
         self.beatmap_id = self.recs[rec_num][0]
         self.enabled_mods = self.recs[rec_num][1]

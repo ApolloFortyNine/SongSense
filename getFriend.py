@@ -123,7 +123,7 @@ class GetFriend():
             return max_matches_id
 
     def update_friends_bool(self):
-        if self.user_row.friends == []:
+        if not self.user_row.friends:
             return True
         elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).days > 2:
             return True
@@ -150,7 +150,6 @@ class GetFriend():
         for x in self.top_friends:
             if type(x) != Friend:
                 user_id = x[0]
-                matches = x[1]
             else:
                 user_id = x.user_id
             top_friends_list.append(self.session.query(User).filter(User.user_id ==
@@ -195,14 +194,15 @@ class GetFriend():
     def get_rec_url(self, rec_num=None):
         if rec_num is None:
             rec_num = random.randrange(0, 10)
-        if self.recs == []:
+        if not self.recs:
             return "Username does not exist"
         self.beatmap_id = self.recs[rec_num][0]
         self.enabled_mods = self.recs[rec_num][1]
         self.rec_url = "https://osu.ppy.sh/b/" + str(self.beatmap_id)
         return "https://osu.ppy.sh/b/" + str(self.beatmap_id)
 
-    def get_mods_str(self, mods_int):
+    @staticmethod
+    def get_mods_str(mods_int):
         mods = ""
         if mods_int == 0:
             return "NOMOD"
@@ -229,4 +229,3 @@ class GetFriend():
         if mods == "DTNC":
             mods = "DT"
         return mods
-

@@ -162,7 +162,7 @@ class IRCBot:
                     friend.get_rec_url(rec_num=x)
                     beatmap_info = session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id ==
                                                                      friend.beatmap_id).first()
-                    if beatmap_info.total_length < length:
+                    if beatmap_info.total_length <= length:
                         map_str = self.get_map_str(friend)
                         message = ("Recommendation less than " + str(length_raw) + " minutes" +
                                    ": " + map_str)

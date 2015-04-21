@@ -8,11 +8,11 @@ import datetime
 import logging
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
-from database import User
-from database import Beatmap
-from database import Friend
-from fill import Fill
-from config import Config
+from songsense.database import User
+from songsense.database import Beatmap
+from songsense.database import Friend
+from songsense.fill import Fill
+from songsense.config import Config
 
 
 logger = logging.getLogger('main')

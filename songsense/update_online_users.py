@@ -3,9 +3,9 @@ This script will scrape the online users using an ircbot instance.
 """
 import time
 from sqlalchemy import *
-from ircbot import IRCBot
-from fill import Fill
-from config import Config
+from songsense.ircbot import IRCBot
+from songsense.fill import Fill
+from songsense.config import Config
 
 
 config = Config()

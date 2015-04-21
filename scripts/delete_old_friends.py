@@ -4,8 +4,8 @@ so they're no longer needed.
 """
 import datetime
 from sqlalchemy.orm import sessionmaker
-from config import Config
-from database import *
+from songsense.config import Config
+from songsense.database import *
 
 
 config = Config()

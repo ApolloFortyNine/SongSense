@@ -12,6 +12,9 @@ from database import *
 from fill import Fill
 import datetime
 import random
+import logging
+
+logger = logging.getLogger('main')
 # Can't use process pool because GetFriend isn't pickleable, but it shouldn't be bound by cpu
 # (just SQL calls) so threads alone should be fine
 from concurrent.futures import ThreadPoolExecutor as Pool
@@ -84,6 +87,7 @@ class IRCBot:
         beatmap = session.query(BeatmapInfo).filter(BeatmapInfo.beatmap_id ==
                                                     friend.beatmap_id).first()
         if not beatmap:
+            logger.info("Beatmap {0} didn't appear in beatmap table".format(friend.beatmap_id))
             beatmap = self.osu.get_beatmaps(map_id=friend.beatmap_id)
             try:
                 beatmap = beatmap[0]
@@ -179,7 +183,9 @@ class IRCBot:
                     if payload['sender'] == self.nickname:
                         return
                     message = "I don't have any more recommendations :/"
-        self.say(message, payload['sender'])
+        if message:
+            logger.info(message)
+            self.say(message, payload['sender'])
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

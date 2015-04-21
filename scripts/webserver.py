@@ -7,7 +7,7 @@ import logging.handlers
 import cherrypy
 from sqlalchemy import *
 from sqlalchemy.orm import *
-from songsense.getFriend import GetFriend
+from songsense.getfriend import GetFriend
 from songsense.database import User
 from songsense.config import Config
 

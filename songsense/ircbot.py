@@ -8,7 +8,7 @@ import datetime
 import random
 import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
-from songsense.getFriend import GetFriend
+from songsense.getfriend import GetFriend
 from songsense.osuapi.osuapi import OsuApi
 from songsense.config import Config
 from songsense.database import *

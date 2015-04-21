@@ -8,11 +8,11 @@ import datetime
 import random
 import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
-from getFriend import GetFriend
-from osuapi.osuapi import OsuApi
-from config import Config
-from database import *
-from fill import Fill
+from songsense.getFriend import GetFriend
+from songsense.osuapi.osuapi import OsuApi
+from songsense.config import Config
+from songsense.database import *
+from songsense.fill import Fill
 
 
 logger = logging.getLogger('main')

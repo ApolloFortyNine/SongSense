@@ -6,10 +6,8 @@ import operator
 import random
 import datetime
 import logging
-
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
-
 from database import User
 from database import Beatmap
 from database import Friend

@@ -3,9 +3,7 @@ This script will remove friends older than 3 days. These friends are updated eve
 so they're no longer needed.
 """
 import datetime
-
 from sqlalchemy.orm import sessionmaker
-
 from config import Config
 from database import *
 

@@ -3,7 +3,6 @@ This script initiates an irc listening service.
 """
 import logging
 import logging.handlers
-
 from ircbot import IRCBot
 from config import Config
 

@@ -4,10 +4,8 @@ then adds them
 """
 import datetime
 import time
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import *
-
 from config import Config
 from database import BeatmapInfo, Base
 from osuapi.osuapi import OsuApi

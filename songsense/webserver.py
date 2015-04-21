@@ -7,7 +7,7 @@ import logging.handlers
 import cherrypy
 from sqlalchemy import *
 from sqlalchemy.orm import *
-from getFriend import GetFriend
+from getfriend import GetFriend
 from database import User
 from config import Config
 

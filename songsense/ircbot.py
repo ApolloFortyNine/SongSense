@@ -8,7 +8,7 @@ import datetime
 import random
 import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
-from getFriend import GetFriend
+from getfriend import GetFriend
 from osuapi.osuapi import OsuApi
 from config import Config
 from database import *

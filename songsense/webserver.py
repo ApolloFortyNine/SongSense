@@ -2,14 +2,15 @@
 This is an extremely rudimentary webserver. It works, and that's about all that can be said
 about it
 """
-from getFriend import GetFriend
+import logging
+import logging.handlers
 import cherrypy
 from sqlalchemy import *
 from sqlalchemy.orm import *
-from database import User, Friend, Beatmap
+from getFriend import GetFriend
+from database import User
 from config import Config
-import logging
-import logging.handlers
+
 
 logger = logging.getLogger('main')
 handler = logging.handlers.RotatingFileHandler(filename='web.log', maxBytes=5000000, backupCount=3)

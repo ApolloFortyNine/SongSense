@@ -2,17 +2,18 @@
 GetFriend creates an object that contains a user's top 10 friends and can create there top 20
 recommendations. It's probably easiest to understand if you see how it's used in ircbot.py
 """
+import operator
+import random
+import datetime
+import logging
 from sqlalchemy import *
+from sqlalchemy.orm import sessionmaker
 from database import User
 from database import Beatmap
 from database import Friend
-from sqlalchemy.orm import sessionmaker
-import operator
-import random
 from fill import Fill
 from config import Config
-import datetime
-import logging
+
 
 logger = logging.getLogger('main')
 

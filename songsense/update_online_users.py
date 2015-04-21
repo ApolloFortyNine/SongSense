@@ -1,11 +1,12 @@
 """
 This script will scrape the online users using an ircbot instance.
 """
-from ircbot import IRCBot
 import time
-from fill import Fill
 from sqlalchemy import *
+from ircbot import IRCBot
+from fill import Fill
 from config import Config
+
 
 config = Config()
 engine = create_engine(config.engine_str, **config.engine_args)

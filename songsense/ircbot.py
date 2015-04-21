@@ -3,16 +3,19 @@ IRCBot is used to listen for requests, as well as to scrape online users.
 """
 import socket
 import time
-from getFriend import GetFriend
-from osuApi import OsuApi
-from config import Config
 from threading import Thread
-from sqlalchemy.orm import sessionmaker, scoped_session
-from database import *
-from fill import Fill
 import datetime
 import random
 import logging
+
+from sqlalchemy.orm import sessionmaker, scoped_session
+
+from songsense.getFriend import GetFriend
+from osuapi.osuapi import OsuApi
+from songsense.config import Config
+from songsense.database import *
+from songsense.fill import Fill
+
 
 logger = logging.getLogger('main')
 # Can't use process pool because GetFriend isn't pickleable, but it shouldn't be bound by cpu

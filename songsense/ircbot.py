@@ -11,7 +11,7 @@ import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 from songsense.getFriend import GetFriend
-from osuapi.osuapi import OsuApi
+from songsense.osuapi.osuapi import OsuApi
 from songsense.config import Config
 from songsense.database import *
 from songsense.fill import Fill

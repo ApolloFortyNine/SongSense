@@ -10,7 +10,7 @@ from sqlalchemy import *
 
 from songsense.config import Config
 from songsense.database import BeatmapInfo, Base
-from osuApi import OsuApi
+from songsense.osuapi.osuapi import OsuApi
 
 
 config = Config()

@@ -8,7 +8,7 @@ import logging
 from sqlalchemy.orm import sessionmaker
 
 from songsense.config import Config
-from osuapi.osuapi import OsuApi
+from songsense.osuapi.osuapi import OsuApi
 from songsense.database import Beatmap
 from songsense.database import User
 from songsense.database import Base

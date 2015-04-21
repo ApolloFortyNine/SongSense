@@ -5,9 +5,9 @@ import time
 
 from sqlalchemy import *
 
-from songsense.ircbot import IRCBot
-from songsense.fill import Fill
-from songsense.config import Config
+from ircbot import IRCBot
+from fill import Fill
+from config import Config
 
 
 config = Config()

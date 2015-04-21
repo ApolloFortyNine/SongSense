@@ -6,8 +6,8 @@ import datetime
 
 from sqlalchemy.orm import sessionmaker
 
-from songsense.config import Config
-from songsense.database import *
+from config import Config
+from database import *
 
 
 config = Config()

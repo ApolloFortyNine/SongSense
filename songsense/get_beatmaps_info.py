@@ -8,9 +8,9 @@ import time
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import *
 
-from songsense.config import Config
-from songsense.database import BeatmapInfo, Base
-from songsense.osuapi.osuapi import OsuApi
+from config import Config
+from database import BeatmapInfo, Base
+from osuapi.osuapi import OsuApi
 
 
 config = Config()

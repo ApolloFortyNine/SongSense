@@ -4,8 +4,8 @@ This script initiates an irc listening service.
 import logging
 import logging.handlers
 
-from songsense.ircbot import IRCBot
-from songsense.config import Config
+from ircbot import IRCBot
+from config import Config
 
 
 logger = logging.getLogger('main')

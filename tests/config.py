@@ -1,6 +1,6 @@
 class Config():
     def __init__(self):
-        self.engine_str = "postgresql://osudb:osudbpassword@localhost/osudb"
+        self.engine_str = "postgresql://postgres@localhost/osudb"
         self.engine_args = {}
         if self.engine_str.find('sqlite:/') == -1:
             self.engine_args = {'client_encoding': 'utf8'}

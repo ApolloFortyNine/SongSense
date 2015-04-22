@@ -1,7 +1,8 @@
-from songsense import fill, getfriend, config
+from songsense import fill, getfriend
 from songsense.database import  *
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import *
+import config
 
 
 def test_fill():

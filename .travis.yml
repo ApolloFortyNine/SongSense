@@ -8,3 +8,7 @@ python:
 install:
   - "pip install ."
   - "pip install psycopg2"
+before_script:
+  - psql -c "create role osudb with password 'osudbpassword';" -U postgres
+  - psql -c 'create database osudb owner osudb;' -U postgres
+script: pytest

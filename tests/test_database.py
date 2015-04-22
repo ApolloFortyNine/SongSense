@@ -11,7 +11,7 @@ def test_fill():
     Session = sessionmaker(engine)
     session = Session()
     filler = fill.Fill(engine)
-    filler.fill_data('ApoxlloFortyNine')
+    filler.fill_data('ApolloFortyNine')
     user = session.query(User).filter(User.username == 'ApolloFortyNine').first()
     if not user:
         assert False

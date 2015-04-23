@@ -37,7 +37,8 @@ class Fill:
         except ValueError:
             time.sleep(5)
             user_info = self.osu.get_user(osu_name)[0]
-        # An index error means just an empty array was sent back, which means the user has been removed
+        # An index error means just an empty array was sent back, which means the user has
+        # been removed
         except IndexError:
             print("We got a cheater over here")
             return
@@ -56,7 +57,8 @@ class Fill:
             beatmaps = self.osu.get_user_best(osu_name, limit=50)
         arr = []
 
-        # Create an array of Beatmaps objects to insert into a User. Probably could be done better but it works
+        # Create an array of Beatmaps objects to insert into a User. Probably could be done
+        # better but it works
         for beatmap in beatmaps:
             if 'enabled_mods' in beatmap:
                 # Removes nightcore mod
@@ -77,7 +79,8 @@ class Fill:
                                 date=datetime.datetime.strptime(beatmap['date'], "%Y-%m-%d %H:%M:%S"),
                                 rank=beatmap['rank'], pp=beatmap['pp'], pp_rank=user_info['pp_rank']))
 
-        # Using merge here allows it to both refresh user info and beatmap info. Also handles changed name, since
+        # Using merge here allows it to both refresh user info and beatmap info. Also handles
+        # changed name, since
         # user_id is the primary key
         self.session.merge(User(user_id=user_info['user_id'], username=user_info['username'],
                                 count300=user_info['count300'], count100=user_info['count100'],
@@ -86,7 +89,9 @@ class Fill:
                                 pp_rank=user_info['pp_rank'], level=user_info['level'], pp_raw=user_info['pp_raw'],
                                 accuracy=user_info['accuracy'], count_rank_ss=user_info['count_rank_ss'],
                                 count_rank_s=user_info['count_rank_s'], count_rank_a=user_info['count_rank_a'],
-                                country=user_info['country'], beatmaps=arr, last_updated=datetime.datetime.now()))
+                                country=user_info['country'], last_updated=datetime.datetime.now()))
+        # I'm pretty sure the old way would add additional beatmaps if they changed, rather than
+        # deleting the old ones
         current_user.beatmaps = arr
 
         self.session.commit()

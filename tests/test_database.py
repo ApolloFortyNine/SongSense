@@ -14,6 +14,7 @@ def setup_module(module):
     filler = fill.Fill(engine)
     filler.fill_data('ApolloFortyNine')
     filler.fill_data('gelibolue')
+    filler.fill_data('G_u_M_i')
 
 
 def test_fill():
@@ -30,6 +31,13 @@ def test_friend_name():
 
 def test_rec_url():
     friend = getfriend.GetFriend('ApolloFortyNine')
-    url = friend.get_rec_url(rec_num=5)
+    url = friend.get_rec_url()
+    if not url:
+        assert False
+
+
+def test_underscore_name():
+    friend = getfriend.GetFriend('G_u_M_i')
+    url = friend.get_rec_url()
     if not url:
         assert False

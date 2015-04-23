@@ -102,6 +102,7 @@ class Fill:
                                     accuracy=user_info['accuracy'], count_rank_ss=user_info['count_rank_ss'],
                                     count_rank_s=user_info['count_rank_s'], count_rank_a=user_info['count_rank_a'],
                                     country=user_info['country'], last_updated=datetime.datetime.now()))
+            current_user = self.session.query(User).filter(User.username == osu_name).first()
             current_user.beatmaps = arr
 
         self.session.commit()

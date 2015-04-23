@@ -41,3 +41,9 @@ def test_underscore_name():
     url = friend.get_rec_url()
     if not url:
         assert False
+
+
+def test_using_fill_twice():
+    friend = getfriend.GetFriend('ApolloFortyNine')
+    if not friend.friend_id:
+        assert False

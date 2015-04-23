@@ -44,6 +44,8 @@ def test_underscore_name():
 
 
 def test_using_fill_twice():
-    friend = getfriend.GetFriend('ApolloFortyNine')
-    if not friend.friend_id:
+    filler = fill.Fill(engine, force=True)
+    filler.fill_data('ApolloFortyNine')
+    rows = session.query(Beatmap).filter(Beatmap.user_id == 1845677).count()
+    if rows != 50:
         assert False

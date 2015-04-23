@@ -87,6 +87,7 @@ class Fill:
                                 accuracy=user_info['accuracy'], count_rank_ss=user_info['count_rank_ss'],
                                 count_rank_s=user_info['count_rank_s'], count_rank_a=user_info['count_rank_a'],
                                 country=user_info['country'], beatmaps=arr, last_updated=datetime.datetime.now()))
+        current_user.beatmaps = arr
 
         self.session.commit()
         self.session.close()

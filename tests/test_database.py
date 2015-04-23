@@ -26,3 +26,10 @@ def test_friend_name():
     friend = getfriend.GetFriend('ApolloFortyNine')
     name = friend.get_friend_name()
     assert name == 'gelibolue'
+
+
+def test_rec_url():
+    friend = getfriend.GetFriend('ApolloFortyNine')
+    url = friend.get_rec_url(rec_num=5)
+    if not url:
+        assert False

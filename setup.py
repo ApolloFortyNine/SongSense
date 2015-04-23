@@ -10,6 +10,6 @@ setup(name='SongSense',
       author_email='forwardingtoyou@gmail.com',
       url='https://github.com/ApolloFortyNine/SongSense',
       install_requires=['sqlalchemy', 'cherrypy', 'httplib2'],
-      packages=['songsense'],
+      packages=['songsense', 'songsense.osuapi'],
       package_dir={'songsense': 'songsense'},
       )

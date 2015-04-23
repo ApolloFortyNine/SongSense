@@ -6,10 +6,10 @@ import datetime
 import logging
 from sqlalchemy.orm import sessionmaker
 from songsense.config import Config
-from songsense.osuapi.osuapi import OsuApi
 from songsense.database import Beatmap
 from songsense.database import User
 from songsense.database import Base
+from songsense.osuapi.osuapi import OsuApi
 
 
 logger = logging.getLogger('main')
@@ -82,17 +82,27 @@ class Fill:
         # Using merge here allows it to both refresh user info and beatmap info. Also handles
         # changed name, since
         # user_id is the primary key
-        self.session.merge(User(user_id=user_info['user_id'], username=user_info['username'],
-                                count300=user_info['count300'], count100=user_info['count100'],
-                                count50=user_info['count50'], play_count=user_info['playcount'],
-                                ranked_score=user_info['ranked_score'], total_score=user_info['total_score'],
-                                pp_rank=user_info['pp_rank'], level=user_info['level'], pp_raw=user_info['pp_raw'],
-                                accuracy=user_info['accuracy'], count_rank_ss=user_info['count_rank_ss'],
-                                count_rank_s=user_info['count_rank_s'], count_rank_a=user_info['count_rank_a'],
-                                country=user_info['country'], last_updated=datetime.datetime.now()))
+        if not current_user:
+            self.session.merge(User(user_id=user_info['user_id'], username=user_info['username'],
+                                    count300=user_info['count300'], count100=user_info['count100'],
+                                    count50=user_info['count50'], play_count=user_info['playcount'],
+                                    ranked_score=user_info['ranked_score'], total_score=user_info['total_score'],
+                                    pp_rank=user_info['pp_rank'], level=user_info['level'], pp_raw=user_info['pp_raw'],
+                                    accuracy=user_info['accuracy'], count_rank_ss=user_info['count_rank_ss'],
+                                    count_rank_s=user_info['count_rank_s'], count_rank_a=user_info['count_rank_a'],
+                                    country=user_info['country'], beatmaps=arr, last_updated=datetime.datetime.now()))
         # I'm pretty sure the old way would add additional beatmaps if they changed, rather than
         # deleting the old ones
-        current_user.beatmaps = arr
+        else:
+            self.session.merge(User(user_id=user_info['user_id'], username=user_info['username'],
+                                    count300=user_info['count300'], count100=user_info['count100'],
+                                    count50=user_info['count50'], play_count=user_info['playcount'],
+                                    ranked_score=user_info['ranked_score'], total_score=user_info['total_score'],
+                                    pp_rank=user_info['pp_rank'], level=user_info['level'], pp_raw=user_info['pp_raw'],
+                                    accuracy=user_info['accuracy'], count_rank_ss=user_info['count_rank_ss'],
+                                    count_rank_s=user_info['count_rank_s'], count_rank_a=user_info['count_rank_a'],
+                                    country=user_info['country'], last_updated=datetime.datetime.now()))
+            current_user.beatmaps = arr
 
         self.session.commit()
         self.session.close()

@@ -20,8 +20,6 @@ def test_fill():
     user = session.query(User).filter(User.username == 'ApolloFortyNine').first()
     if not user:
         assert False
-    session.query(User).filter(User.username == 'ApolloFortyNine').delete()
-    session.commit()
 
 
 def test_friend_name():

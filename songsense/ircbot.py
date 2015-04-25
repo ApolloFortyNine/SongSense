@@ -144,10 +144,12 @@ class IRCBot:
             elif payload['msg'].find(' mods=') != -1:
                 future = self.pool.submit(GetFriend, payload['sender'])
                 friend = future.result()
+                # If message is greater than length, it's not a legitimate request
+                if len(payload['msg']) >= 15:
+                    return
                 msg_params = payload['msg'].split(" ")
                 try:
                     mods_string = msg_params[1][5:]
-                    print(mods_string)
                 except IndexError:
                     message = ("Format is '!r mods=HDDT' or whatever mods you wish in 2 character"
                                " format. No mods is NOMOD")
@@ -165,6 +167,8 @@ class IRCBot:
                 friend.recs = random_recs
                 for x in range(len(friend.recs)):
                     friend.get_rec_url(rec_num=x)
+                    if mods_string == "":
+                        continue
                     if friend.recs[x][1].find(mods_string) != -1:
                         map_str = self.get_map_str(friend)
                         message = ("Recommendation with " + mods_string + ":" + map_str)

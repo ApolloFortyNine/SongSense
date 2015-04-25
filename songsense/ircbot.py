@@ -141,6 +141,44 @@ class IRCBot:
                 session.commit()
                 session.close()
                 message = "Updated successfully!"
+            elif payload['msg'].find(' mods='):
+                future = self.pool.submit(GetFriend, payload['sender'])
+                friend = future.result()
+                msg_params = payload['msg'].split(" ")
+                try:
+                    mods_string = msg_params[1][5:]
+                    print(mods_string)
+                except IndexError:
+                    message = ("Format is '!r mods=HDDT' or whatever mods you wish in 2 character"
+                               " format. No mods is NOMOD")
+                    if payload['sender'] == self.nickname:
+                        return
+                    self.say(message, payload['sender'])
+                    return
+                mods_string = mods_string.upper()
+                if mods_string == 'NOMODS':
+                    mods_string = 'NOMOD'
+                reverse_mods_str = ""
+                if len(mods_string) >= 4:
+                    reverse_mods_str = mods_string[7:8] + mods_string[5:6]
+                random_recs = random.sample(friend.recs, len(friend.recs))
+                friend.recs = random_recs
+                for x in range(len(friend.recs)):
+                    friend.get_rec_url(rec_num=x)
+                    if friend.recs[x][1].find(mods_string) != -1:
+                        map_str = self.get_map_str(friend)
+                        message = ("Recommendation with " + mods_string + ":" + map_str)
+                        break
+                    elif (friend.recs[x][1].find(reverse_mods_str) != -1) & \
+                            (not reverse_mods_str == ""):
+                        map_str = self.get_map_str(friend)
+                        message = ("Recommendation with " + mods_string + ":" + map_str)
+                        break
+                else:
+                    message = ("Sorry, none of the found recommendations use " +
+                               mods_string + ". The correct format is '!r mods=HDDT' or"
+                                             " whatever mods you wish in 2 character format."
+                                             " No mods is NOMODS")
             elif payload['msg'].find(' length=') != -1:
                 future = self.pool.submit(GetFriend, payload['sender'])
                 friend = future.result()

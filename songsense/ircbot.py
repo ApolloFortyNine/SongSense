@@ -141,7 +141,7 @@ class IRCBot:
                 session.commit()
                 session.close()
                 message = "Updated successfully!"
-            elif payload['msg'].find(' mods='):
+            elif payload['msg'].find(' mods=') != -1:
                 future = self.pool.submit(GetFriend, payload['sender'])
                 friend = future.result()
                 msg_params = payload['msg'].split(" ")

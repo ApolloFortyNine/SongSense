@@ -34,6 +34,7 @@ class IRCBot:
         self.pool = Pool(8)
         self.engine = create_engine(self.config.engine_str, **self.config.engine_args)
         self.Session = scoped_session(sessionmaker(bind=self.engine))
+        self.senders = {}
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
@@ -77,9 +78,21 @@ class IRCBot:
                 payload['target'] = args[2]
                 payload['msg'] = args[3][1:]
 
-                if payload['type'] == 'PRIVMSG':
-                    t = Thread(target=self.respond, args=(payload,))
-                    t.start()
+                if (payload['type'] == 'PRIVMSG') & (payload['msg'][0] == '!'):
+                    start_time = time.time()
+                    # This is 'just in case' clause, shouldn't actually happen
+                    if payload['sender'] in self.senders:
+                        if (start_time - self.senders[payload['sender']]) > 600:
+                            del self.senders[payload['sender']]
+
+                    if payload['sender'] in self.senders:
+                        if payload['sender'] != self.nickname:
+                            time.sleep(.5)
+                            self.say('Please be patient!', payload['sender'])
+                    else:
+                        self.senders[payload['sender']] = start_time
+                        t = Thread(target=self.respond, args=(payload,))
+                        t.start()
 
     # It's important that get_rec_url() has been called on the friend object before calling.
     # Session's aren't thread safe, so create a new one whenever it's used
@@ -146,6 +159,7 @@ class IRCBot:
                 friend = future.result()
                 # If message is greater than length, it's not a legitimate request
                 if len(payload['msg']) >= 15:
+                    del self.senders[payload['sender']]
                     return
                 msg_params = payload['msg'].split(" ")
                 try:
@@ -154,8 +168,10 @@ class IRCBot:
                     message = ("Format is '!r mods=HDDT' or whatever mods you wish in 2 character"
                                " format. No mods is NOMOD")
                     if payload['sender'] == self.nickname:
+                        del self.senders[payload['sender']]
                         return
                     self.say(message, payload['sender'])
+                    del self.senders[payload['sender']]
                     return
                 mods_string = mods_string.upper()
                 if mods_string == 'NOMODS':
@@ -193,8 +209,10 @@ class IRCBot:
                     message = ("Format is '!r length=X', where X is minutes."
                                " Such as 1.5 for 1:30.")
                     if payload['sender'] == self.nickname:
+                        del self.senders[payload['sender']]
                         return
                     self.say(message, payload['sender'])
+                    del self.senders[payload['sender']]
                     return
                 length = length_raw * 60
                 session = self.Session()
@@ -224,11 +242,15 @@ class IRCBot:
                 # If no break is hit.
                 else:
                     if payload['sender'] == self.nickname:
+                        del self.senders[payload['sender']]
                         return
                     message = "I don't have any more recommendations :/"
         if message:
             logger.info(message)
             self.say(message, payload['sender'])
+            logger.info('Time taken for request: {0}'.format((time.time() -
+                                                              self.senders[payload['sender']])))
+        del self.senders[payload['sender']]
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

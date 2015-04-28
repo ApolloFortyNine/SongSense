@@ -90,7 +90,7 @@ class IRCBot:
                             time.sleep(.5)
                             self.say('Please be patient!', payload['sender'])
                     else:
-                        self.senders[payload['sender']] = time.time()
+                        self.senders[payload['sender']] = start_time
                         t = Thread(target=self.respond, args=(payload,))
                         t.start()
 

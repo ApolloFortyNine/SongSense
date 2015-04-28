@@ -34,6 +34,7 @@ class IRCBot:
         self.pool = Pool(8)
         self.engine = create_engine(self.config.engine_str, **self.config.engine_args)
         self.Session = scoped_session(sessionmaker(bind=self.engine))
+        self.senders = {}
 
     def send(self, msg):
         self.socket.send(bytes(msg+"\r\n", 'UTF-8'))
@@ -78,8 +79,13 @@ class IRCBot:
                 payload['msg'] = args[3][1:]
 
                 if payload['type'] == 'PRIVMSG':
-                    t = Thread(target=self.respond, args=(payload,))
-                    t.start()
+                    if (payload['sender'] in self.senders) & (payload['msg'][0] == '!'):
+                        if payload['sender'] != self.nickname:
+                            self.say('Please be patient!', payload['sender'])
+                    elif payload['msg'][0] == '!':
+                        self.senders[payload['sender']] = time.time()
+                        t = Thread(target=self.respond, args=(payload,))
+                        t.start()
 
     # It's important that get_rec_url() has been called on the friend object before calling.
     # Session's aren't thread safe, so create a new one whenever it's used
@@ -229,6 +235,9 @@ class IRCBot:
         if message:
             logger.info(message)
             self.say(message, payload['sender'])
+            logger.info('Time taken for request: {0}'.format((time.time() -
+                                                              self.senders[payload['sender']])))
+        del self.senders[payload['sender']]
 
     def get_names(self):
         self.socket.connect((self.server, self.port))

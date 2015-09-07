@@ -39,7 +39,7 @@ class StringGenerator(object):
 
     @cherrypy.expose
     def get_friend(self, name="HappyStick"):
-        friend = GetFriend(name)
+        # friend = GetFriend(name)
         out_str = ''
         config = Config()
         engine = create_engine(config.engine_str)

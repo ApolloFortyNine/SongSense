@@ -74,36 +74,50 @@ class GetFriend():
         logger.debug("update_friends_bool %s", str(self.update_friends_bool()))
         if self.update_friends_bool():
             logger.debug("Before comparison queries")
-            for x in self.user_row.beatmaps:
-                # comparison = self.session.query(Beatmap).options(load_only("user_id")).\
-                # filter(Beatmap.beatmap_id == x.beatmap_id).\
-                # filter(Beatmap.enabled_mods == x.enabled_mods).all()
-                # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they
-                # don't need to be)
-                query_str = ("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
-                             str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
-                             str(x.enabled_mods))
-                comparison = self.engine.execute(query_str)
-                logger.debug("After %d comparison", number_of_maps)
-                logger.debug("Current comparison: %d enabled_mods=%d", x.beatmap_id, x.enabled_mods)
-                number_of_maps += 1
-                for y in comparison:
-                    if str(y.user_id) in users_dict:
-                        users_dict[str(y.user_id)] += 1
-                    else:
-                        users_dict[str(y.user_id)] = 1
+            # for x in self.user_row.beatmaps:
+            #     # comparison = self.session.query(Beatmap).options(load_only("user_id")).\
+            #     # filter(Beatmap.beatmap_id == x.beatmap_id).\
+            #     # filter(Beatmap.enabled_mods == x.enabled_mods).all()
+            #     # Hand written quarry saves about a second (SQLAlchemy adds wildcards where they
+            #     # don't need to be)
+            #     query_str = ("SELECT user_id FROM beatmaps WHERE  beatmaps.beatmap_id=" +
+            #                  str(x.beatmap_id) + " AND beatmaps.enabled_mods=" +
+            #                  str(x.enabled_mods))
+            #     comparison = self.engine.execute(query_str)
+            #     logger.debug("After %d comparison", number_of_maps)
+            #     logger.debug("Current comparison: %d enabled_mods=%d", x.beatmap_id, x.enabled_mods)
+            #     number_of_maps += 1
+            #     for y in comparison:
+            #         if str(y.user_id) in users_dict:
+            #             users_dict[str(y.user_id)] += 1
+            #         else:
+            #             users_dict[str(y.user_id)] = 1
+            query_str = """
+                SELECT s.user_id, count(s.user_id) AS count
+                FROM (select user_id, beatmap_id, enabled_mods, pp_rank from beatmaps where user_id={0}) e
+                INNER JOIN beatmaps s ON s.beatmap_id=e.beatmap_id
+                AND s.enabled_mods=e.enabled_mods
+                AND s.pp_rank < ((select pp_rank from users where user_id={0}) + 500)
+                AND s.pp_rank > ((select pp_rank from users where user_id={0}) - 500)
+                AND s.user_id != {0}
+                GROUP BY s.user_id
+                ORDER BY count DESC LIMIT 10;""".format(self.user_row.user_id)
             logger.debug("After comparison queries")
-            users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
+            comparison = self.engine.execute(query_str)
+            users_list = []
+            for x in comparison:
+                users_list += [x.user_id, x.count]
+            # users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
             try:
-                self.matches = users_list[1][1]
-                self.top_friends = users_list[1:11]
+                self.matches = users_list[0][1]
+                self.top_friends = users_list
             except IndexError:
                 self.matches = 0
                 self.top_friends = []
             friend_list = []
             # Save friends in their own table, so we can skip searches on friends who are only
             # a day or so old
-            for x in users_list[1:11]:
+            for x in users_list:
                 user = self.session.query(User).filter(User.user_id == int(x[0])).first()
                 friend = Friend(user_id=user.user_id, owner_id=self.user_row.user_id,
                                 username=user.username, pp_rank=user.pp_rank, matches=x[1],
@@ -111,7 +125,7 @@ class GetFriend():
                 friend_list.append(friend)
             self.user_row.friends = friend_list
             self.session.commit()
-            return users_list[1][0]
+            return users_list[0][0]
         else:
             max_matches = 0
             max_matches_id = ''

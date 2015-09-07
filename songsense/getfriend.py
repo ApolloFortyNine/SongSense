@@ -223,25 +223,21 @@ class GetFriend():
         if mods_int == 0:
             return "NOMOD"
         if (mods_int & 1) == 1:
-            mods += mods + "NF"
+            mods += "NF"
         if (mods_int & 2) == 2:
-            mods += mods + "EZ"
+            mods += "EZ"
         if (mods_int & 8) == 8:
-            mods += mods + "HD"
+            mods += "HD"
         if (mods_int & 16) == 16:
-            mods += mods + "HR"
+            mods += "HR"
         if (mods_int & 32) == 32:
-            mods += mods + "SD"
+            mods += "SD"
         if (mods_int & 64) == 64:
-            mods += mods + "DT"
+            mods += "DT"
         if (mods_int & 256) == 256:
-            mods += mods + "HT"
-        # if (mods_int & 512) == 512:
-        #    mods = mods + "NC"
+            mods += "HT"
         if (mods_int & 1024) == 1024:
-            mods += mods + "FL"
+            mods += "FL"
         if (mods_int & 4096) == 4096:
-            mods += mods + "SO"
-        if mods == "DTNC":
-            mods = "DT"
+            mods += "SO"
         return mods

@@ -109,7 +109,6 @@ class GetFriend():
             # users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
             try:
                 self.matches = users_list[0][1]
-                self.top_friends = users_list
             except IndexError:
                 self.matches = 0
                 self.top_friends = []
@@ -124,6 +123,7 @@ class GetFriend():
                                 last_updated=datetime.datetime.now())
                 friend_list.append(friend)
             self.user_row.friends = friend_list
+            self.top_friends = friend_list
             self.session.commit()
             return users_list[0][0]
         else:

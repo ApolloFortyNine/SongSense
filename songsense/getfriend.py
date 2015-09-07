@@ -102,7 +102,6 @@ class GetFriend():
                 AND s.user_id != {0}
                 GROUP BY s.user_id
                 ORDER BY count DESC LIMIT 10;""".format(self.user_row.user_id)
-            logger.debug("After comparison queries")
             comparison = self.engine.execute(query_str)
             users_list = []
             for x in comparison:
@@ -114,6 +113,7 @@ class GetFriend():
             except IndexError:
                 self.matches = 0
                 self.top_friends = []
+            logger.debug("After comparison queries")
             friend_list = []
             # Save friends in their own table, so we can skip searches on friends who are only
             # a day or so old

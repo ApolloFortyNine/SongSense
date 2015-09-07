@@ -106,7 +106,7 @@ class GetFriend():
             comparison = self.engine.execute(query_str)
             users_list = []
             for x in comparison:
-                users_list += [x.user_id, x.count]
+                users_list.append([x.user_id, x.count])
             # users_list = sorted(users_dict.items(), key=operator.itemgetter(1), reverse=True)
             try:
                 self.matches = users_list[0][1]

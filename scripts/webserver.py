@@ -10,8 +10,10 @@ from sqlalchemy.orm import *
 from songsense.getfriend import GetFriend
 from songsense.database import User
 from songsense.config import Config
+from jinja2 import Environment, FileSystemLoader
 
 
+env = Environment(loader=FileSystemLoader('templates'))
 logger = logging.getLogger('main')
 handler = logging.handlers.RotatingFileHandler(filename='web.log', maxBytes=5000000, backupCount=3)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -39,22 +41,24 @@ class StringGenerator(object):
 
     @cherrypy.expose
     def get_friend(self, name="HappyStick"):
-        out_str = ''
-        config = Config()
-        engine = create_engine(config.engine_str)
-        Session = sessionmaker(bind=engine)
-        session = Session()
         friend = GetFriend(name)
+        friends_arr = []
         for x in friend.top_friends:
-            user = session.query(User).filter(User.user_id == x.user_id).first()
-            out_str += ("Name: " + user.username + " Matches: " + str(x.matches) +
-                        " Url: https://osu.ppy.sh/u/" + str(user.user_id) + " :: ")
-        return out_str
+            url_str = "https://osu.ppy.sh/u/{0}".format(x.user_id)
+            friends_arr.append([x.username, x.matches, url_str])
+        template = env.get_template('friends.jinja')
+        return template.render(allRows=friends_arr)
 
     @cherrypy.expose
     def get_rec(self, name="HappyStick"):
         friend = GetFriend(name)
-        return "Url: " + friend.get_rec_url()
+        friends_with_links = friend.recs
+        for x in friends_with_links:
+            url_str = "https://osu.ppy.sh/b/{0}".format(x[0])
+            x.append(url_str)
+        template = env.get_template('recs.jinja')
+        return template.render(allRows=friend.recs)
+
 
 if __name__ == '__main__':
     config = Config()

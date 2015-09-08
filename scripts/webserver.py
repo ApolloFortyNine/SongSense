@@ -5,10 +5,7 @@ about it
 import logging
 import logging.handlers
 import cherrypy
-from sqlalchemy import *
-from sqlalchemy.orm import *
 from songsense.getfriend import GetFriend
-from songsense.database import User
 from songsense.config import Config
 from jinja2 import Environment, FileSystemLoader
 
@@ -22,22 +19,11 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
-class StringGenerator(object):
+class WebServer(object):
     @cherrypy.expose
     def index(self):
-        return """<html>
-          <head></head>
-          <body>
-            <form method="get" action="get_friend">
-              <input type="text" value="HappyStick" name="name" />
-              <button type="submit">Get friend</button>
-            </form>
-            <form method="get" action="get_rec">
-              <input type="text" value="HappyStick" name="name" />
-              <button type="submit">Get recommendation</button>
-            </form>
-          </body>
-        </html>"""
+        template = env.get_template('inputs.jinja')
+        return template.render()
 
     @cherrypy.expose
     def get_friend(self, name="HappyStick"):
@@ -50,7 +36,7 @@ class StringGenerator(object):
         return template.render(allRows=friends_arr)
 
     @cherrypy.expose
-    def get_rec(self, name="HappyStick"):
+    def get_recs(self, name="HappyStick"):
         friend = GetFriend(name)
         friends_with_links = friend.recs
         for x in friends_with_links:
@@ -63,4 +49,4 @@ class StringGenerator(object):
 if __name__ == '__main__':
     config = Config()
     cherrypy.server.socket_host = config.ip
-    cherrypy.quickstart(StringGenerator())
+    cherrypy.quickstart(WebServer())

@@ -22,7 +22,7 @@ logger.setLevel(logging.INFO)
 class WebServer(object):
     @cherrypy.expose
     def index(self):
-        template = env.get_template('inputs.jinja')
+        template = env.get_template('index.jinja')
         return template.render()
 
     @cherrypy.expose

@@ -49,5 +49,4 @@ class WebServer(object):
 if __name__ == '__main__':
     config = Config()
     cherrypy.server.socket_host = config.ip
-    cherrypy.server.thread_pool = 3
     cherrypy.quickstart(WebServer())

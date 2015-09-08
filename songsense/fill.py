@@ -48,7 +48,7 @@ class Fill:
         # If low rank, don't bother storing
         if user_info['pp_rank'] is None:
             return True
-        elif (int(user_info['pp_rank']) > 300000) | (int(user_info['pp_rank']) == 0):
+        elif (int(user_info['pp_rank']) > 250000) | (int(user_info['pp_rank']) == 0):
             return True
         try:
             beatmaps = self.osu.get_user_best(osu_name, limit=50)

@@ -39,14 +39,11 @@ class StringGenerator(object):
 
     @cherrypy.expose
     def get_friend(self, name="HappyStick"):
-        # friend = GetFriend(name)
         out_str = ''
         config = Config()
         engine = create_engine(config.engine_str)
         Session = sessionmaker(bind=engine)
         session = Session()
-        # This has to be called once after the first time. I should probably figure out
-        # why at some point.
         friend = GetFriend(name)
         for x in friend.top_friends:
             user = session.query(User).filter(User.user_id == x.user_id).first()

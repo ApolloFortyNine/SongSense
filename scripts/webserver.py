@@ -33,7 +33,7 @@ class WebServer(object):
             url_str = "https://osu.ppy.sh/u/{0}".format(x.user_id)
             friends_arr.append([x.username, x.matches, url_str])
         template = env.get_template('friends.jinja')
-        return template.render(allRows=friends_arr)
+        return template.render(allRows=friends_arr, name=name)
 
     @cherrypy.expose
     def get_recs(self, name="HappyStick"):
@@ -43,7 +43,7 @@ class WebServer(object):
             url_str = "https://osu.ppy.sh/b/{0}".format(x[0])
             x.append(url_str)
         template = env.get_template('recs.jinja')
-        return template.render(allRows=friend.recs)
+        return template.render(allRows=friend.recs, name=name)
 
 
 if __name__ == '__main__':

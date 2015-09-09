@@ -7,6 +7,8 @@ import logging.handlers
 import cherrypy
 from songsense.getfriend import GetFriend
 from songsense.config import Config
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -17,6 +19,13 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
+config = Config()
+engine = create_engine(config.engine_str, **config.engine_args)
+# Base.metadata.create_all(self.engine, checkfirst=True)
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
+# Then call session = Session() inside functions, and pass as second argument to getfriend. Also modify filler
+# and update_online_users, as well as irc_bot
 
 
 class WebServer(object):
@@ -27,7 +36,8 @@ class WebServer(object):
 
     @cherrypy.expose
     def get_friend(self, name="HappyStick"):
-        friend = GetFriend(name)
+        session = Session()
+        friend = GetFriend(session, name)
         friends_arr = []
         for x in friend.top_friends:
             url_str = "https://osu.ppy.sh/u/{0}".format(x.user_id)
@@ -37,7 +47,8 @@ class WebServer(object):
 
     @cherrypy.expose
     def get_recs(self, name="HappyStick"):
-        friend = GetFriend(name)
+        session = Session()
+        friend = GetFriend(session, name)
         friends_with_links = friend.recs
         for x in friends_with_links:
             url_str = "https://osu.ppy.sh/b/{0}".format(x[0])

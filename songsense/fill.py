@@ -16,14 +16,11 @@ logger = logging.getLogger('main')
 
 
 class Fill:
-    def __init__(self, engine, force=False):
+    def __init__(self, session, force=False):
         self.config = Config()
         self.force = force
         self.osu = OsuApi(self.config.osu_api_key)
-        self.engine = engine
-        self.Session = sessionmaker(bind=self.engine)
-        self.session = self.Session()
-        Base.metadata.create_all(self.engine, checkfirst=True)
+        self.session = session
 
     def fill_data(self, osu_name):
         # If last updated less than 3 days ago, don't update

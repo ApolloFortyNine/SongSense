@@ -18,18 +18,16 @@ from songsense.config import Config
 logger = logging.getLogger('main')
 
 
-class GetFriend():
-    def __init__(self, name):
+class GetFriend:
+    def __init__(self, session, name):
         logger.info('Top of GetFriend.__init__')
         self.recs = []
         self.enabled_mods = ''
         self.beatmap_id = 0
         self.config = Config()
-        self.engine = create_engine(self.config.engine_str, **self.config.engine_args)
-        Session = sessionmaker(bind=self.engine)
         self.matches = 0
         self.top_friends = []
-        self.session = Session()
+        self.session = session
         self.name = name
         logger.info('Before get user_row')
         self.user_row = self.session.query(User).filter(User.username == self.name).first()
@@ -47,7 +45,7 @@ class GetFriend():
 
     def get_friend_id(self):
         if self.user_row is None:
-            filler = Fill(self.engine)
+            filler = Fill(self.session)
             filler.fill_data(self.name)
             self.user_row = self.session.query(User).filter(User.username == self.name).first()
             # Since _ in IRC can be spaces in OSU names, if can't find a user with '_', replace

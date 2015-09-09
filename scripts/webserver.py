@@ -7,6 +7,8 @@ import logging.handlers
 import cherrypy
 from songsense.getfriend import GetFriend
 from songsense.config import Config
+from sqlalchemy import *
+from sqlalchemy.orm import sessionmaker, scoped_session
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -17,6 +19,12 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
+config = Config();
+engine = create_engine(config.engine_str, **config.engine_args)
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(sessionmaker())
+# Then call session = Session() inside functions, and pass as second argument to getfriend. Also modify filler
+# and update_online_users, as well as irc_bot
 
 
 class WebServer(object):

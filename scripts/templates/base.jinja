@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% block head %}
+  <title>{% block title %}SongSense{% endblock %}</title>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css"  media="screen,projection"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  {% endblock %}
+</head>
+<body>
+  {% macro nav_links() -%}
+    <li><a href="/">Home</a><li>
+  {%- endmacro %}
+  <nav>
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo center">SongSense</a>
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="left hide-on-med-and-down">
+        {{nav_links()}}
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        {{nav_links()}}
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="section">
+      <div class="card white lighten-1">
+        <div class="card-content">{% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Import jQuery before materialize.js-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
+  <script>
+    $('.button-collapse').sideNav({
+    menuWidth: 300, // Default is 240
+    edge: 'left', // Choose the horizontal origin
+    closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+    });
+  </script>
+</body>
+</html>

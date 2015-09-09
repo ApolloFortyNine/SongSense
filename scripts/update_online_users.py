@@ -2,15 +2,21 @@
 This script will scrape the online users using an ircbot instance.
 """
 import time
-from sqlalchemy import *
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 from songsense.ircbot import IRCBot
 from songsense.fill import Fill
 from songsense.config import Config
-
+from songsense.database import Base
 
 config = Config()
 engine = create_engine(config.engine_str, **config.engine_args)
-filler = Fill(engine)
+Base.metadata.create_all(engine, checkfirst=True)
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
+session = Session()
+
+filler = Fill(session)
 server = config.irc_server
 name = config.irc_name
 port = config.irc_port

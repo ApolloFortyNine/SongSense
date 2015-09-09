@@ -100,7 +100,7 @@ class GetFriend:
                 AND s.user_id != {0}
                 GROUP BY s.user_id
                 ORDER BY count DESC LIMIT 10;""".format(self.user_row.user_id)
-            comparison = self.engine.execute(query_str)
+            comparison = self.session.execute(query_str)
             users_list = []
             for x in comparison:
                 users_list.append([x.user_id, x.count])

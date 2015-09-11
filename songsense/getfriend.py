@@ -6,6 +6,7 @@ import operator
 import random
 import datetime
 import logging
+import statistics
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from songsense.database import User
@@ -95,8 +96,8 @@ class GetFriend:
                 FROM (select user_id, beatmap_id, enabled_mods, pp_rank from beatmaps where user_id={0}) e
                 INNER JOIN beatmaps s ON s.beatmap_id=e.beatmap_id
                 AND s.enabled_mods=e.enabled_mods
-                AND s.pp_rank < ((select pp_rank from users where user_id={0}) + 500)
-                AND s.pp_rank > ((select pp_rank from users where user_id={0}) - 500)
+                AND s.pp_rank < ((select pp_rank from users where user_id={0}) + 1000)
+                AND s.pp_rank > ((select pp_rank from users where user_id={0}) - 1000)
                 AND s.user_id != {0}
                 GROUP BY s.user_id
                 ORDER BY count DESC LIMIT 10;""".format(self.user_row.user_id)
@@ -138,7 +139,7 @@ class GetFriend:
     def update_friends_bool(self):
         if not self.user_row.friends:
             return True
-        elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).days > 2:
+        elif (datetime.datetime.now() - self.user_row.friends[0].last_updated).total_seconds() > 1:
             return True
         else:
             return False
@@ -174,7 +175,8 @@ class GetFriend:
         beatmaps_dict = {}
         # Here we create a dictionary of all beatmaps and their rate of occurrence
         for x in top_friends_list:
-            comparison = self.session.query(Beatmap).filter(Beatmap.user_id == x.user_id).all()
+            counter = 0
+            comparison = self.session.query(Beatmap).filter(Beatmap.user_id == x.user_id).order_by(Beatmap.pp.desc()).all()
             for y in comparison:
                 # Creates unique string with mods
                 beatmap_enabled_mods_str = (str(y.beatmap_id) + self.get_mods_str(y.enabled_mods))
@@ -183,9 +185,13 @@ class GetFriend:
                     continue
                 if beatmap_enabled_mods_str in beatmaps_dict:
                     beatmaps_dict[beatmap_enabled_mods_str][0] += 1
+                    beatmaps_dict[beatmap_enabled_mods_str][3].append(y.pp)
                 else:
                     beatmaps_dict[beatmap_enabled_mods_str] = [1, y.beatmap_id,
-                                                               self.get_mods_str(y.enabled_mods)]
+                                                               self.get_mods_str(y.enabled_mods), [y.pp]]
+                counter += 1
+                if counter >= 15:
+                    break
         # Create a listed sorted by occurrence
         beatmaps_str_list = sorted(beatmaps_dict.items(), key=operator.itemgetter(1), reverse=True)
         beatmaps_list = []
@@ -193,7 +199,7 @@ class GetFriend:
         # Create list of beatmap id's of size map_rec_pool
         for x in beatmaps_str_list:
             # First is id, second is mods, third is matches
-            beatmaps_list.append([x[1][1], x[1][2], x[1][0]])
+            beatmaps_list.append([x[1][1], x[1][2], x[1][0], int(statistics.median_high(x[1][3]))])
             map_rec_pool -= 1
             if map_rec_pool == 0:
                 break

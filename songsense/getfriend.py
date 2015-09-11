@@ -96,8 +96,8 @@ class GetFriend:
                 FROM (select user_id, beatmap_id, enabled_mods, pp_rank from beatmaps where user_id={0}) e
                 INNER JOIN beatmaps s ON s.beatmap_id=e.beatmap_id
                 AND s.enabled_mods=e.enabled_mods
-                AND s.pp_rank < ((select pp_rank from users where user_id={0}) + 1000)
-                AND s.pp_rank > ((select pp_rank from users where user_id={0}) - 1000)
+                AND s.pp_rank < ((select pp_rank from users where user_id={0}) + 500)
+                AND s.pp_rank > ((select pp_rank from users where user_id={0}) - 750)
                 AND s.user_id != {0}
                 GROUP BY s.user_id
                 ORDER BY count DESC LIMIT 10;""".format(self.user_row.user_id)

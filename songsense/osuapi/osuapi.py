@@ -20,7 +20,7 @@ import json
 class OsuApi:
     def __init__(self, api_key):
         self.api_key = api_key
-        self.h = httplib2.Http('.cache')
+        self.h = httplib2.Http()
 
     def get_beatmaps(self, since='', set_id=-1, map_id=-1, user_id=-1):
         base_url = 'https://osu.ppy.sh/api/get_beatmaps?'

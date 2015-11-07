@@ -8,7 +8,7 @@ my_config = Config()
 engine = create_engine(my_config.engine_str, **my_config.engine_args)
 Session = sessionmaker(engine)
 session = Session()
-filler = fill.Fill(engine)
+filler = fill.Fill(session)
 
 
 def setup_module(module):
@@ -30,25 +30,25 @@ def test_fill():
 
 
 def test_friend_name():
-    friend = getfriend.GetFriend('ApolloFortyNine')
+    friend = getfriend.GetFriend(session, 'ApolloFortyNine')
     name = friend.get_friend_name()
-    assert name == 'gelibolue'
+    assert name == 'sand sentinel'
 
 
 def test_rec_url():
-    friend = getfriend.GetFriend('ApolloFortyNine')
+    friend = getfriend.GetFriend(session, 'ApolloFortyNine')
     url = friend.get_rec_url()
     assert url
 
 
 def test_underscore_name():
-    friend = getfriend.GetFriend('G_u_M_i')
+    friend = getfriend.GetFriend(session, 'G_u_M_i')
     url = friend.get_rec_url()
     assert url
 
 
 def test_using_fill_twice():
-    filler_force = fill.Fill(engine, force=True)
+    filler_force = fill.Fill(session, force=True)
     filler_force.fill_data('ApolloFortyNine')
     rows = session.query(Beatmap).filter(Beatmap.user_id == 1845677).count()
     assert rows == 50
